@@ -41,6 +41,15 @@ backBtn.on('click', function() {
 createRoomBtn.on('click', function() {
 	var name = $("new-username").val();
   var rand = Math.floor(Math.random() * 10000); // A random 4 digit number as channel name
+  if (rand < 1000) {
+  	if (rand > 99) {
+  		rand = "0"+rand;
+  	} else if (rand > 9) {
+  		rand = "00"+rand;
+  	} else {
+  		rand = "000"+rand;
+  	}
+  }
   pubnub.subscribe({
   	channel   : "mirrorRoom" + rand,
   	timetoken : new Date().getTime(),
