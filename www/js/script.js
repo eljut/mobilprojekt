@@ -219,7 +219,8 @@ enterBtn.on('click', function() {
 });
 
 roomIdInput.on('keydown', function(e) {
-	if (e.keyCode == 13) {
+	if (e.keyCode === 9 || e.keyCode === 13) {
+		e.preventDefault();
 		enterRoom();
 	}
 });
