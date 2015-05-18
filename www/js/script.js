@@ -23,6 +23,9 @@ var dir = 0;
 var tiltFB = 0;
 var tiltLR = 0;
 
+var oldCoords = {};
+var newCoords = {};
+
 var yawCheck = false;
 var rollCheck = false;
 var pitchCheck = false;
@@ -33,6 +36,51 @@ var iWasJohn = false;
 var iAmJohn = false;
 
 if (window.hyper && window.hyper.log) { console.log = hyper.log }
+
+// Wait for device API libraries to load
+document.addEventListener("deviceready", onDeviceReady, false);
+
+// device APIs are available
+function onDeviceReady() {
+	// Throw an error if no update is received every 2.5 seconds
+	var options = { timeout: 2500 };
+    watchID = navigator.geolocation.watchPosition(setCoords, positionErrorHandler, options);
+}
+
+var setCoords = function(position) {
+	console.log("Latitude: "+position.coords.latitude)
+	console.log("Longitude: "+position.coords.longitude)
+	newCoords = position.coords;
+	oldCoords = {
+		latitude: position.coords.latitude+0.0001,
+		longitude: position.coords.longitude+0.0001
+	};
+	var distance = calculateDistance(oldCoords.latitude, oldCoords.longitude,
+		newCoords.latitude, newCoords.longitude);
+	console.log("distance: "+distance);
+}
+
+var positionErrorHandler = function(error) {
+	alert('code: '    + error.code    + '\n' +
+		'message: ' + error.message + '\n');
+}
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+	var R = 6371; // km
+	var dLat = (lat2 - lat1).toRad();
+	var dLon = (lon2 - lon1).toRad(); 
+	var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+		Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * 
+		Math.sin(dLon / 2) * Math.sin(dLon / 2); 
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
+	var d = R * c;
+	// return in meters
+	return d*1000;
+}
+
+Number.prototype.toRad = function() {
+	return this * Math.PI / 180;
+}
 
 if (window.DeviceOrientationEvent) {
 	if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
@@ -105,7 +153,7 @@ var pubnub = PUBNUB.init({
 console.log("username:",username);
 
 newUsernameInput.on('keydown', function(e) {
-	if (newUsernameInput.val().length > 0 && e.keyCode == 13) {
+	if (newUsernameInput.val().length > 0 && (e.keyCode === 9 || e.keyCode == 13)) {
 		setName(newUsernameInput.val());
 	}
 });
@@ -126,7 +174,11 @@ var setName = function(newName) {
 }
 
 vibrateBtn.on('click', function() {
-	navigator.notification.vibrate(200)
+	if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
+		navigator.notification.vibrate(200);
+	} else {
+		navigator.notification.vibrate([100,200,50,200,100]);
+	}
 });
 
 backBtn.on('click', function() {
@@ -239,6 +291,8 @@ var enterRoom = function() {
 	roomID = roomIdInput.val();
 	if (roomID.length == 4) {
 		checkRoom();
+	} else {
+		$("#enter-error").html("Room ID is always<br>between 0000-9999.");
 	}
 }
 
