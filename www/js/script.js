@@ -426,6 +426,7 @@ var subscribeToRoom = function() {
 		},
     heartbeat: 6
   });
+	startBtn.addClass("hidden");
 	nonjohninfo.removeClass("hidden");
 }
 
@@ -627,38 +628,32 @@ var roundEnded = function(amIJohn){
 		    	newJohn = m.uuids[randomJohn];
 		    	console.log("newJohn ",newJohn)
 
-				if (username == newJohn){
-					console.log("I became john again!")
-					startBtn.removeClass("hidden");
-					johninfo.removeClass("hidden");
-				}
-				else{
-					iAmJohn = false;
+				iAmJohn = false;
 
-					pubnub.state({
-					    channel  : "mirrorRoom" + roomID,
-					    uuid: username, 
-					    state    : { 
-					    	name : name,
-					  		john : iAmJohn,
-					  		go: false,
-					  		score : score
-					    },
-					    callback : function(m){
-					    	checkPeople();
-					    	console.log(m)
-					    },
-					    error    : function(m){console.log(m)}
-					});
+				pubnub.state({
+				    channel  : "mirrorRoom" + roomID,
+				    uuid: username, 
+				    state    : { 
+				    	name : name,
+				  		john : iAmJohn,
+				  		go: false,
+				  		score : score
+				    },
+				    callback : function(m){
+				    	checkPeople();
+				    	console.log(m)
+				    },
+				    error    : function(m){console.log(m)}
+				});
 
-					pubnub.publish({
-						channel : "mirrorRoom" + roomID,
-						message : {user: newJohn}
-					});
+				pubnub.publish({
+					channel : "mirrorRoom" + roomID,
+					message : {user: newJohn}
+				});
 
-					startBtn.addClass("hidden");
-					johninfo.addClass("hidden");
-				}
+				startBtn.addClass("hidden");
+				johninfo.addClass("hidden");
+				
 		    }
 		});
 	}
