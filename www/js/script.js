@@ -580,7 +580,12 @@ var checkPeople = function(){
 	    callback : function(m){
 	    	$('#user-list').empty();
 	    	for(i=0; i<m.uuids.length; i++){
-	    		$('#user-list').append('<tr><td>'+m.uuids[i].state.name+'</td><td>'+m.uuids[i].state.score+'</td></tr>');
+	    		if(m.uuids[i].state.name == name){
+	    			$('#user-list').append('<tr><td><strong>'+m.uuids[i].state.name+'</strong></td><td>'+m.uuids[i].state.score+'</td></tr>');
+	    		}
+	    		else{
+	    			$('#user-list').append('<tr><td>'+m.uuids[i].state.name+'</td><td>'+m.uuids[i].state.score+'</td></tr>');
+	    		}
 	    	}
 	    },
 	    state : true
@@ -650,8 +655,8 @@ var roundEnded = function(amIJohn){
 				  		score : score
 				    },
 				    callback : function(m){
-				    	checkPeople();
 				    	console.log(m)
+				    	checkPeople();
 				    },
 				    error    : function(m){console.log(m)}
 				});
