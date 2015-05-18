@@ -1,4 +1,4 @@
-var name = "lol";
+var name = "Awwyeah";
 var roomID = 0;
 var score = 0;
 var newUsernameInput = $("#new-username");
@@ -205,7 +205,7 @@ backBtn.on('click', function() {
 });
 
 createRoomBtn.on('click', function() {
-	var name = $("new-username").val();
+	
 	score = 0; //Reset score
 	roomID = Math.floor(Math.random() * 10000); // A random 4 digit number as channel name
 	if (roomID < 1000) {
@@ -592,7 +592,17 @@ var getRandomUuid = function(len,selfPos){
 	randomJohn = Math.floor(Math.random()*len);
 
 	if(selfPos == randomJohn){
-		return getRandomUuid(len,selfPos)
+		if(selfPos+1 > len){
+			if(selfPos > 0){
+				randomJohn = selfPos-1;
+			}
+			else{
+				randomJohn = 0;
+			}
+		}
+		else{
+			randomJohn = selfPos+1;
+		}
 	}
 	else{
 		return randomJohn
@@ -603,8 +613,8 @@ var roundEnded = function(amIJohn){
 
 	console.log("roundEnded")
 	roundStarted = false;
-	$("#room-info").removeClass("hidden").delay(500);
-	$("#game").addClass("hidden").delay(500);
+	$("#room-info").removeClass("hidden").delay(2500);
+	$("#game").addClass("hidden").delay(2500);
 	yourScore.text(score);
 
 	if(amIJohn){
