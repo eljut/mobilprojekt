@@ -219,6 +219,7 @@ createRoomBtn.on('click', function() {
 	$("#room-id").text(roomID);
 	startBtn.removeClass("hidden");
 	johninfo.removeClass("hidden");
+	$("#enter-error").text("");
 });
 
 startBtn.on('click', function() {
