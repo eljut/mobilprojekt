@@ -5,6 +5,7 @@
 html, body {
     height: 100%;
     width: 100%;
+    max-width: 100%;
     margin: 0;
     padding: 0;
 
@@ -29,6 +30,7 @@ body {
     margin: 0px;
     padding: 20px;
     padding-top: 70px;
+    overflow-x: hidden;
 }
 
 h1 {
@@ -155,10 +157,13 @@ input:focus {
 
 #timer {
     font-size: 50pt;
+    -webkit-transition: all .5s;
+    transition: all .5s;
 }
 
 .timerAnimation {
-    font-size: 40pt;
+    display: inline-block;
+    font-size: 32pt;
     -webkit-animation: timer-animation 1s ease-in-out infinite;
     animation: timer-animation 1s ease-in-out infinite;
 }
