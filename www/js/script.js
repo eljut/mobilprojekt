@@ -311,6 +311,7 @@ var checkRoom = function() {
 				room.addClass("page-active");
 				$("#room-id").text(roomID);
 				subscribeToRoom();
+				$("#enter-error").text("");
 			}
 		}
 	});
@@ -399,7 +400,7 @@ var subscribeToRoom = function() {
 
 // Compare user's orientation to those of John
 var compareState = function(state) {
-	if (angleBetween(dir,state.yaw-10,state.yaw+10)) {
+	if (angleBetween(dir,state.yaw-25,state.yaw+25)) {
 		yawSpan.text("YEAH!");
 		yawCheck = true;
 	} else {
