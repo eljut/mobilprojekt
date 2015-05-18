@@ -238,7 +238,7 @@ startBtn.on('click', function() {
 	$("#room-info").addClass("hidden");
 	$("#game").removeClass("hidden");
 	johninfo.addClass("hidden");
-	poseTimer(5);
+	poseTimer(15);
 });
 
 var poseTimer = function(time) {
@@ -423,6 +423,7 @@ var subscribeToRoom = function() {
 var compareState = function(state) {
 	if (angleBetween(dir,state.yaw-25,state.yaw+25)) {
 		yawBG.css("background-color", "lime");
+		yawCheck = true;
 	} else {
 		yawBG.css("background-color", "#dddddd");
 		yawCheck = false;
