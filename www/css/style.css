@@ -166,6 +166,36 @@ input:focus {
     font-size: 25pt;
 }
 
+#timer {
+    font-size: 50pt;
+}
+
+.timerAnimation {
+    /*font-size: 50pt;*/
+    -webkit-animation: timer-animation 1s infinite;
+    animation: timer-animation 1s infinite;
+}
+
+.rednumbers {
+    color: red;
+}
+
+@-webkit-keyframes timer-animation {
+    0% {font-size: 40pt;}
+    25% {font-size: 42pt;}
+    50% {font-size: 45pt;}
+    75% {font-size: 47pt;}
+    100% {font-size: 50pt;}
+}
+
+@keyframes timer-animation {
+    0% {font-size: 40pt;}
+    25% {font-size: 42pt;}
+    50% {font-size: 45pt;}
+    75% {font-size: 47pt;}
+    100% {font-size: 50pt;}
+}
+
 /* Portrait layout (default) */
 .app {
     background:url(../img/logo.png) no-repeat center top; /* 170px x 200px */

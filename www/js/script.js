@@ -11,6 +11,7 @@ var enterBtn = $("#enter-button");
 var roomIdInput = $("#room-id-input");
 var vibrateBtn = $("#vibrate");
 var johninfo = $("#john-info");
+var nonjohninfo = $("#non-john-info"); 
 
 var yawSpan = $("#yaw");
 var pitchSpan = $("#pitch");
@@ -49,7 +50,6 @@ if (window.DeviceOrientationEvent) {
 		    		rollSpan.text(tiltLR);
 
 		    		if (roundStarted) {
-		    			poseTimer(10);
 		    			compareState(johnState);
 		    		}
 		    	});
@@ -77,7 +77,6 @@ if (window.DeviceOrientationEvent) {
 	    yawSpan.text(dir);
 
 	    if (roundStarted) {
-	    	poseTimer(10);
     		compareState(johnState);
     	}
 	  }, false);
@@ -179,14 +178,22 @@ startBtn.on('click', function() {
 
 var poseTimer = function(time) {
 	if (time > 0) {
+		$("#timer").addClass("timerAnimation")
 		setTimeout(function() {poseTimer(time-1)}, 1000);
 		$("#timer").text(time);
+		if (time <= 3) {
+			$("#timer").addClass("rednumbers");
+		}
 	} else if (time < 1 && roundStarted == false) {
 		startGame();
+		$("#timer").removeClass("rednumbers");
+		$("#timer").removeClass("timerAnimation");
 		$("#timer").text("Wait...");
-	} else {
-		$("#timer").text("Wait...");
-		checkPose();
+	} else if (time < 1 && roundStarted == true) {
+		$("#timer").removeClass("rednumbers");
+	 	$("#timer").removeClass("timerAnimation");
+	 	$("#timer").text("Wait...");
+	 	checkPose();
 	}
 }
 
@@ -261,14 +268,17 @@ var subscribeToRoom = function() {
   	message: function(m){console.log(m)},
   	presence: function(message) {
   		console.log("presence",message);
+  		nonjohninfo.removeClass("hidden");
   		// // check state updates
   		if (message.action == "state-change") {
   			console.log("STATE CHANGE!");
   			var stateChange = message.data;
 	  		if (stateChange.john == true) {
 	  			$("#room-info").addClass("hidden");
-					$("#game").removeClass("hidden");
+				$("#game").removeClass("hidden");
+				nonjohninfo.addClass("hidden");
 	  			roundStarted = true;
+	  			poseTimer(10);
 	  			johnState = stateChange;
 	  		}
   		} else {
@@ -290,27 +300,30 @@ var subscribeToRoom = function() {
 var compareState = function(state) {
 	if (angleBetween(dir,state.yaw-10,state.yaw+10)) {
 		yawSpan.text("YEAH!");
-		yawCheck == true;
+		yawCheck = true;
 	} else {
 		yawSpan.text(":(");
-		yawCheck == false;
+		yawCheck = false;
 	}
 
 	if (angleBetween(tiltFB+180,state.pitch-10+180,state.pitch+10+180)) {
 		pitchSpan.text("YEAH!");
-		pitchCheck == true;
+		pitchCheck = true;
 	} else {
 		pitchSpan.text(":(");
-		pitchCheck == false;
+		pitchCheck = false;
 	}
 
 	if (angleBetweenRoll(tiltLR+90,state.roll-10+90,state.roll+10+90)) {
 		rollSpan.text("YEAH!");
-		rollCheck == true;
+		rollCheck = true;
 	} else {
 		rollSpan.text(":(");
-		rollCheck == false;
+		rollCheck = false;
 	}
+	// console.log("yawCheck:", yawCheck);
+	// console.log("pitchCheck:", pitchCheck);
+	// console.log("rollCheck:", rollCheck);
 }
 
 // Check if angle "n" is between a and b
@@ -346,6 +359,7 @@ var checkPose = function() {
 		$("#timer").text("Good job!");
 	} else {
 		$("#timer").text("Ooops, so close!");
+		navigator.notification.vibrate(200);
 	}
 }
 
