@@ -154,6 +154,7 @@ createRoomBtn.on('click', function() {
 	  	state: {
 	  		name : name,
 	  		john : true,
+	  		go: false,
 	  		score : score
 	  	},
 	  	callback  : function(message) {
@@ -212,6 +213,7 @@ var startGame = function() {
 			name: name,
 			score: score,
   			john: true,
+  			go: true,
   			yaw: dir,
   			pitch: tiltFB,
   			roll: tiltLR
@@ -280,7 +282,7 @@ var subscribeToRoom = function() {
   		if (message.action == "state-change") {
   			console.log("STATE CHANGE!");
   			var stateChange = message.data;
-	  		if (stateChange.john == true) {
+	  		if (stateChange.john == true && stateChange.go == true) {
 	  			$("#room-info").addClass("hidden");
 				$("#game").removeClass("hidden");
 				nonjohninfo.addClass("hidden");
@@ -451,7 +453,7 @@ var roundEnded = function(amIJohn){
 		    	pubnub.state({
 				    channel  : "mirrorRoom" + roomID,
 				    uuid: username, 
-				    state    : { john : false },
+				    state    : { john : false, go: false },
 				    callback : function(m){console.log(m)},
 				    error    : function(m){console.log(m)}
 				});
@@ -459,7 +461,7 @@ var roundEnded = function(amIJohn){
 				pubnub.state({
 				    channel  : "mirrorRoom" + roomID,
 				    uuid: newJohn, 
-				    state    : { john : true },
+				    state    : { john : true, go: false },
 				    callback : function(m){console.log(m)},
 				    error    : function(m){console.log(m)}
 				});
@@ -468,6 +470,10 @@ var roundEnded = function(amIJohn){
 					console.log("I became john again!")
 					startBtn.removeClass("hidden");
 					johninfo.removeClass("hidden");
+				}
+				else{
+					startBtn.addClass("hidden");
+					johninfo.addClass("hidden");
 				}
 		    }
 		});
