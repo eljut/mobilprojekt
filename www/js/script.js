@@ -376,16 +376,15 @@ var checkPresence = function(message){
 			if (stateChange.john == true && stateChange.go == true) {
 
 				pubnub.state({
-				   channel  : "mirrorRoom" + roomID,
-				   state : {
-				   	name : name,
-					go: false,
-					john: iAmJohn,
-					score : score
-				   },
-				   error    : function(m){console.log(m)}
+				   	channel  : "mirrorRoom" + roomID,
+				   	state : {
+				   		name : name,
+						go: false,
+						john: iAmJohn,
+						score : score
+				   	},
+				   	error    : function(m){console.log(m)}
 				});
-
 
 				$("#room-info").addClass("hidden");
 				$("#game").removeClass("hidden");
@@ -569,11 +568,9 @@ var checkPeople = function(){
 	pubnub.here_now({
 	    channel : "mirrorRoom" + roomID,
 	    callback : function(m){
-	    	//console.log('Here now: ',JSON.stringify(m))
 	    	$('#user-list').empty();
 	    	for(i=0; i<m.uuids.length; i++){
-	    		//console.log(m.uuids[i].state.name)
-	    		$('#user-list').append('<li>'+m.uuids[i].state.name+' Scr: '+m.uuids[i].state.score+'</li>');
+	    		$('#user-list').append('<tr><td>'+m.uuids[i].state.name+'</td><td>'+m.uuids[i].state.score+'</td></tr>');
 	    	}
 	    },
 	    state : true
