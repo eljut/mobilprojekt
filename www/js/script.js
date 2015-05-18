@@ -238,7 +238,7 @@ startBtn.on('click', function() {
 	$("#room-info").addClass("hidden");
 	$("#game").removeClass("hidden");
 	johninfo.addClass("hidden");
-	poseTimer(15);
+	poseTimer(5);
 });
 
 var poseTimer = function(time) {
@@ -383,7 +383,7 @@ var checkPresence = function(message){
 				nonjohninfo.addClass("hidden");
 				roundStarted = true;
 				navigator.geolocation.getCurrentPosition(setOldCoords, positionErrorHandler);
-				poseTimer(10);
+				poseTimer(15);
 				johnState = stateChange;
 			}
 		}
