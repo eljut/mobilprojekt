@@ -8,6 +8,7 @@ var enterRoomBtn = $("#enter-room");
 var enterBtn = $("#enter-button");
 var roomIdInput = $("#room-id-input");
 var vibrateBtn = $("#vibrate");
+var johninfo = $("#john-info");
 
 var yawSpan = $("#yaw");
 var pitchSpan = $("#pitch");
@@ -143,11 +144,13 @@ createRoomBtn.on('click', function() {
 	backBtn.removeClass("hidden");
 	$("#room-id").text(roomID);
 	startBtn.removeClass("hidden");
+	johninfo.removeClass("hidden");
 });
 
 startBtn.on('click', function() {
 	$("#room-info").addClass("hidden");
 	$("#game").removeClass("hidden");
+	johninfo.addClass("hidden");
 	startGame();
 });
 
