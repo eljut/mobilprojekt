@@ -340,7 +340,6 @@ var checkRoom = function() {
 var checkMessage = function(m){
 
 	console.log(m)
-	console.log("NEW MESSAGE MUTFAFAKACA")
 	if (m.user == username){
 		iAmJohn = true;
 		pubnub.state({
