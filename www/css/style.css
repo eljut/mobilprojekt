@@ -109,7 +109,27 @@ input:focus {
 #create-room {
     margin-top: 40px;
 }
+#yaw, #pitch, #roll {
+    height: 100px;
+    width: 100px;
+    margin-top: 14px; 
+    font-size: 30pt;
+    border-radius: 9999px;
+    z-index: 10;
+}
 
+#yawBG, #pitchBG, #rollBG {
+    position: relative;
+    background-color: #CCCCCC;
+    height: 128px;
+    width: 128px;
+    border-radius: 9999px;
+    z-index: 9;
+}
+
+.img-circle{
+    background-color: #e62850;
+}
 .page {
     display: none;
     width: 100%;

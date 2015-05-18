@@ -19,6 +19,10 @@ var yawSpan = $("#yaw");
 var pitchSpan = $("#pitch");
 var rollSpan = $("#roll");
 
+var yawBG = $("#yawBG");
+var pitchBG = $("#pitchBG");
+var rollBG = $("#rollBG");
+
 var dir = 0;
 var tiltFB = 0;
 var tiltLR = 0;
@@ -310,26 +314,26 @@ var subscribeToRoom = function() {
 // Compare user's orientation to those of John
 var compareState = function(state) {
 	if (angleBetween(dir,state.yaw-10,state.yaw+10)) {
-		yawSpan.text("YEAH!");
+		yawSpan.css("background-color", "blue");
 		yawCheck = true;
 	} else {
-		yawSpan.text(":(");
+		yawSpan.css("background-color", "#dddddd");
 		yawCheck = false;
 	}
 
 	if (angleBetween(tiltFB+180,state.pitch-10+180,state.pitch+10+180)) {
-		pitchSpan.text("YEAH!");
+		pitchSpan.css("background-color", "blue");
 		pitchCheck = true;
 	} else {
-		pitchSpan.text(":(");
+		pitchSpan.css("background-color", "#dddddd");
 		pitchCheck = false;
 	}
 
 	if (angleBetweenRoll(tiltLR+90,state.roll-10+90,state.roll+10+90)) {
-		rollSpan.text("YEAH!");
+		rollSpan.css("background-color", "blue");
 		rollCheck = true;
 	} else {
-		rollSpan.text(":(");
+		rollSpan.css("background-color", "#dddddd");
 		rollCheck = false;
 	}
 	colorYPR(state);
@@ -343,9 +347,9 @@ var colorYPR = function(state){
 	var rollAlpha =	1-(smallestAngle(tiltLR, state.roll, 90)/90);
 	var yawAlpha = 1-(smallestAngle(dir, state.yaw, 360)/180);
 
-	pitchSpan.css("background-color", "rgba("+(255-(pitchAlpha*255))+","+(pitchAlpha*255)+",0,1");
-	rollSpan.css("background-color", "rgba("+(255-(rollAlpha*255))+","+(rollAlpha*255)+",0,1)");
-	yawSpan.css("background-color", "rgba("+(255-(yawAlpha*255))+","+(yawAlpha*255)+",0,1)");
+	pitchBG.css("background-color", "rgba("+(255-(pitchAlpha*255))+","+(pitchAlpha*255)+",0,1");
+	rollBG.css("background-color", "rgba("+(255-(rollAlpha*255))+","+(rollAlpha*255)+",0,1)");
+	yawBG.css("background-color", "rgba("+(255-(yawAlpha*255))+","+(yawAlpha*255)+",0,1)");
 }
 
 var smallestAngle = function(a, b, maxangle) {
