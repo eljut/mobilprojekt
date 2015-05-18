@@ -31,7 +31,7 @@
             <div class="container-fluid">
                 <div class="navbar-header">
                     <ul class="nav navbar-nav navbar-left">
-                        <li><button id="back-button" class="btn hidden">Back</button></li>
+                        <li><button id="back-button" class="btn hidden"><span class="glyphicon glyphicon-chevron-left"></span>Back</button></li>
                      </ul>
                 </div>
             </div>
@@ -61,9 +61,12 @@
             <div id="room-info">
                 <h1>Room ID:<span id="room-id"></span></h1>
                 <h3>Number of participants:<span id="num-users"></span></h3>
-                <button id="start-button" class="btn btn-danger hidden">Start!</button>
+                <div id="john-info" class="hidden"><h4>You are John!</h4>
+                <h4>Press Start and strike a pose!</h4>
+                <button id="start-button" class="btn btn-danger hidden">Start!</button></div>
             </div>
             <div id="game" class="hidden">
+                <h1><span id="timer"></span></h1>
                 <h3>Yaw: <span id="yaw"></span></h3>
                 <h3>Pitch: <span id="pitch"></span></h3>
                 <h3>Roll: <span id="roll"></span></h3>

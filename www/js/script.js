@@ -10,6 +10,7 @@ var enterRoomBtn = $("#enter-room");
 var enterBtn = $("#enter-button");
 var roomIdInput = $("#room-id-input");
 var vibrateBtn = $("#vibrate");
+var johninfo = $("#john-info");
 
 var yawSpan = $("#yaw");
 var pitchSpan = $("#pitch");
@@ -77,7 +78,8 @@ if (window.DeviceOrientationEvent) {
 	    yawSpan.text(dir);
 
 	    if (roundStarted) {
-    		compareState(johnState);
+	    	poseTimer(10);
+    		//compareState(johnState);
     	}
 	  }, false);
 	}
@@ -164,13 +166,27 @@ createRoomBtn.on('click', function() {
 	backBtn.removeClass("hidden");
 	$("#room-id").text(roomID);
 	startBtn.removeClass("hidden");
+	johninfo.removeClass("hidden");
 });
 
 startBtn.on('click', function() {
 	$("#room-info").addClass("hidden");
 	$("#game").removeClass("hidden");
-	startGame();
+	johninfo.addClass("hidden");
+	poseTimer(5);
 });
+
+var poseTimer = function(time) {
+	if (time > 0) {
+		setTimeout(function() {poseTimer(time-1)}, 1000);
+		$("#timer").text(time);
+	} else if (time < 1 && roundStarted == false) {
+		startGame();
+		$("#timer").text("Wait...");
+	} else {
+		compareState(johnState);
+	}
+}
 
 var startGame = function() {
 	console.log("yaw");console.log(dir);
