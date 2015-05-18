@@ -236,9 +236,9 @@ createRoomBtn.on('click', function() {
 	room.addClass("page-active");
 	backBtn.removeClass("hidden");
 	$("#room-id").text(roomID);
+	nonjohninfo.addClass("hidden");
 	startBtn.removeClass("hidden");
 	johninfo.removeClass("hidden");
-	nonjohninfo.addClass("hidden");
 	$("#enter-error").text("");
 });
 
@@ -426,8 +426,9 @@ var subscribeToRoom = function() {
 		},
     heartbeat: 6
   });
-	startBtn.addClass("hidden");
 	nonjohninfo.removeClass("hidden");
+	startBtn.addClass("hidden");
+	johninfo.addClass("hidden");
 }
 
 // Compare user's orientation to those of John
@@ -566,7 +567,7 @@ var checkPose = function() {
 		$("#timer").text("Great job!");
 	}
 	else{
-		$("#timer").text("Ooops, so close!");
+		$("#timer").text("Ops, so close!");
 	}
 
 	score += addedScore;
@@ -604,7 +605,6 @@ var roundEnded = function(amIJohn){
 	roundStarted = false;
 	$("#room-info").removeClass("hidden").delay(500);
 	$("#game").addClass("hidden").delay(500);
-	nonjohninfo.removeClass("hidden").delay(500);
 	yourScore.text(score);
 
 	if(amIJohn){
@@ -650,12 +650,12 @@ var roundEnded = function(amIJohn){
 					channel : "mirrorRoom" + roomID,
 					message : {user: newJohn}
 				});
-
-				startBtn.addClass("hidden");
-				johninfo.addClass("hidden");
-				
 		    }
 		});
+
+		nonjohninfo.removeClass("hidden");
+		startBtn.addClass("hidden");
+		johninfo.addClass("hidden");
 	}
 	else{
 		console.log('I was not John')
@@ -673,6 +673,11 @@ var roundEnded = function(amIJohn){
 					startBtn.removeClass("hidden");
 					iWasJohn = true;
 					iAmJohn = true;
+		   		}
+		   		else{
+		   			nonjohninfo.removeClass("hidden");
+		   			startBtn.addClass("hidden");
+					johninfo.addClass("hidden");
 		   		}
 		   		checkPeople();
 		   },
@@ -699,4 +704,7 @@ var goToHomeScreen = function() {
 	johnState = null;
 	iWasJohn = false;
 	iAmJohn = false;
+	nonjohninfo.removeClass("hidden");
+	johninfo.addClass("hidden");
+	startBtn.addClass("hidden");
 }
