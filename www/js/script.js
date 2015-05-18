@@ -49,7 +49,6 @@ if (window.DeviceOrientationEvent) {
 		    		rollSpan.text(tiltLR);
 
 		    		if (roundStarted) {
-		    			poseTimer(10);
 		    			compareState(johnState);
 		    		}
 		    	});
@@ -77,7 +76,6 @@ if (window.DeviceOrientationEvent) {
 	    yawSpan.text(dir);
 
 	    if (roundStarted) {
-	    	poseTimer(10);
     		compareState(johnState);
     	}
 	  }, false);
@@ -182,9 +180,9 @@ var poseTimer = function(time) {
 	} else if (time < 1 && roundStarted == false) {
 		startGame();
 		$("#timer").text("Wait...");
-	} else {
-		$("#timer").text("Wait...");
-		checkPose();
+	} else if (time < 1 && roundStarted == true) {
+	 	$("#timer").text("Wait...");
+	 	checkPose();
 	}
 }
 
@@ -258,6 +256,7 @@ var subscribeToRoom = function() {
   	message: function(m){console.log(m)},
   	presence: function(message) {
   		console.log("presence",message);
+  		$("#timer").text("Wait for John...");
   		// // check state updates
   		if (message.action == "state-change") {
   			console.log("STATE CHANGE!");
@@ -266,6 +265,7 @@ var subscribeToRoom = function() {
 	  			$("#room-info").addClass("hidden");
 					$("#game").removeClass("hidden");
 	  			roundStarted = true;
+	  			poseTimer(10);
 	  			johnState = stateChange;
 	  		}
   		} else {
@@ -287,27 +287,31 @@ var subscribeToRoom = function() {
 var compareState = function(state) {
 	if (angleBetween(dir,state.yaw-10,state.yaw+10)) {
 		yawSpan.text("YEAH!");
-		yawCheck == true;
+		yawCheck = true;
 	} else {
 		yawSpan.text(":(");
-		yawCheck == false;
+		yawCheck = false;
 	}
 
 	if (angleBetween(tiltFB+180,state.pitch-10+180,state.pitch+10+180)) {
 		pitchSpan.text("YEAH!");
-		pitchCheck == true;
+		pitchCheck = true;
 	} else {
 		pitchSpan.text(":(");
-		pitchCheck == false;
+		pitchCheck = false;
 	}
 
 	if (angleBetweenRoll(tiltLR+90,state.roll-10+90,state.roll+10+90)) {
 		rollSpan.text("YEAH!");
-		rollCheck == true;
+		rollCheck = true;
 	} else {
 		rollSpan.text(":(");
-		rollCheck == false;
+		rollCheck = false;
 	}
+
+	console.log("yawCheck:", yawCheck);
+	console.log("pitchCheck:", pitchCheck);
+	console.log("rollCheck:", rollCheck);
 }
 
 // Check if angle "n" is between a and b
