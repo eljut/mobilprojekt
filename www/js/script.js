@@ -368,6 +368,8 @@ var checkMessage = function(m){
 
 var checkPresence = function(message){
 	console.log("presence",message);
+
+	checkPeople();
 	// // check state updates
 	if (message.action == "state-change") {
 		console.log("STATE CHANGE!");
