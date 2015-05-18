@@ -29,6 +29,8 @@ var pitchCheck = false;
 
 var roundStarted = false;
 var johnState = null;
+var iWasJohn = false;
+var iAmJohn = false;
 
 if (window.hyper && window.hyper.log) { console.log = hyper.log }
 
@@ -147,25 +149,18 @@ createRoomBtn.on('click', function() {
 	pubnub.subscribe({
 	  	channel   : "mirrorRoom" + roomID,
 	  	timetoken : new Date().getTime(),
-	  	presence: function(message) {
-	  		console.log("people inside: ",message.occupancy);
-	  		$("#num-users").text(message.occupancy);
-	  	},
+	  	message: checkMessage,
+	  	presence: checkPresence,
 	  	state: {
 	  		name : name,
 	  		john : true,
 	  		go: false,
 	  		score : score
 	  	},
-	  	callback  : function(message) {
-	  	//	console.log("hej");
-	  	//	homeScreen.removeClass("page-active");
-			//	room.addClass("page-active");
-			//	$("#roomID").text(roomID);
-	    },
 	    heartbeat: 6
 	});
-	console.log("hej");
+	iWasJohn = true;
+	iAmJohn = true;
 	homeScreen.removeClass("page-active");
 	room.addClass("page-active");
 	backBtn.removeClass("hidden");
@@ -267,6 +262,68 @@ var checkRoom = function() {
 	});
 }
 
+var checkMessage = function(m){
+
+	console.log(m)
+	console.log("NEW MESSAGE MUTFAFAKACA")
+	if (m.user == username){
+		iAmJohn = true;
+		pubnub.state({
+		    channel  : "mirrorRoom" + roomID,
+		    uuid: username, 
+		    state    : {
+		     	name : name,
+				go: false,
+				john: iAmJohn,
+				score : score
+		 	},
+		    callback : function(m){console.log(m)},
+		    error    : function(m){console.log(m)}
+		});
+	}
+}
+
+var checkPresence = function(message){
+	console.log("presence",message);
+	nonjohninfo.removeClass("hidden");
+	// // check state updates
+	if (message.action == "state-change") {
+		console.log("STATE CHANGE!");
+		var stateChange = message.data;
+		if (iWasJohn == false){
+			if (stateChange.john == true && stateChange.go == true) {
+
+				pubnub.state({
+				   channel  : "mirrorRoom" + roomID,
+				   state : {
+				   	name : name,
+					go: false,
+					john: iAmJohn,
+					score : score
+				   },
+				   error    : function(m){console.log(m)}
+				});
+
+
+				$("#room-info").addClass("hidden");
+				$("#game").removeClass("hidden");
+				nonjohninfo.addClass("hidden");
+				roundStarted = true;
+				poseTimer(10);
+				johnState = stateChange;
+			}
+		}
+		else{
+			iWasJohn = false;
+		}
+	}
+	else{
+		console.log(message.occupancy);
+		$("#num-users").text(message.occupancy);
+		yourScore.text(score);
+	}
+}
+
 // Subscribe to an existing room
 var subscribeToRoom = function() {
 	score = 0; //Reset score
@@ -274,35 +331,14 @@ var subscribeToRoom = function() {
 	pubnub.subscribe({
   	channel   : "mirrorRoom" + roomID,
   	timetoken : new Date().getTime(),
-  	message: function(m){console.log(m)},
-  	presence: function(message) {
-  		console.log("presence",message);
-  		nonjohninfo.removeClass("hidden");
-  		// // check state updates
-  		if (message.action == "state-change") {
-  			console.log("STATE CHANGE!");
-  			var stateChange = message.data;
-	  		if (stateChange.john == true && stateChange.go == true) {
-	  			$("#room-info").addClass("hidden");
-				$("#game").removeClass("hidden");
-				nonjohninfo.addClass("hidden");
-	  			roundStarted = true;
-	  			poseTimer(10);
-	  			johnState = stateChange;
-	  		}
-  		} else {
-  			console.log(message.occupancy);
-  			$("#num-users").text(message.occupancy);
-  			yourScore.text(score);
-  		}
-  	},
+  	message: checkMessage,
+  	presence: checkPresence,
   	state: {
 			name : name,
 			john : false,
+			go: false,
 			score : score
 		},
-  	callback  : function(message) {
-    },
     heartbeat: 6
   });
 }
@@ -416,15 +452,34 @@ var checkPose = function() {
 		//navigator.notification.vibrate(200);
 		score -= 1;
 	}
-/*
-	pubnub.state({
-	   channel  : "mirrorRoom" + roomID,
-	   state    : { score: score },
-	   callback : function(m){console.log(m)},
-	   error    : function(m){console.log(m)}
-	});
-*/
 	roundEnded(false);
+}
+
+var checkPeople = function(){
+	pubnub.here_now({
+	    channel : "mirrorRoom" + roomID,
+	    callback : function(m){
+	    	//console.log('Here now: ',JSON.stringify(m))
+	    	$('#user-list').empty();
+	    	for(i=0; i<m.uuids.length; i++){
+	    		//console.log(m.uuids[i].state.name)
+	    		$('#user-list').append('<li>'+m.uuids[i].state.name+' Scr: '+m.uuids[i].state.score+'</li>');
+	    	}
+	    },
+	    state : true
+	});
+}
+
+var getRandomUuid = function(len,selfPos){
+
+	randomJohn = Math.floor(Math.random()*len);
+
+	if(selfPos == randomJohn){
+		return getRandomUuid(len,selfPos)
+	}
+	else{
+		return randomJohn
+	}
 }
 
 var roundEnded = function(amIJohn){
@@ -445,26 +500,18 @@ var roundEnded = function(amIJohn){
 		    channel : "mirrorRoom" + roomID,
 		    callback : function(m){
 		    	console.log(m)
-		    	randomJohn = Math.floor(Math.random()*m.uuids.length);
+		    	var selfPos;
+
+		    	for(i = 0; i < m.uuids.length; i++){
+		    		if(m.uuids[i] == username){
+		    			selfPos = i;
+		    		}
+		    	}
+
+		    	randomJohn = getRandomUuid(m.uuids.length,selfPos);
 		    	console.log("randomJohn ",randomJohn)
 		    	newJohn = m.uuids[randomJohn];
 		    	console.log("newJohn ",newJohn)
-
-		    	pubnub.state({
-				    channel  : "mirrorRoom" + roomID,
-				    uuid: username, 
-				    state    : { john : false, go: false },
-				    callback : function(m){console.log(m)},
-				    error    : function(m){console.log(m)}
-				});
-
-				pubnub.state({
-				    channel  : "mirrorRoom" + roomID,
-				    uuid: newJohn, 
-				    state    : { john : true, go: false },
-				    callback : function(m){console.log(m)},
-				    error    : function(m){console.log(m)}
-				});
 
 				if (username == newJohn){
 					console.log("I became john again!")
@@ -472,6 +519,29 @@ var roundEnded = function(amIJohn){
 					johninfo.removeClass("hidden");
 				}
 				else{
+					iAmJohn = false;
+
+					pubnub.state({
+					    channel  : "mirrorRoom" + roomID,
+					    uuid: username, 
+					    state    : { 
+					    	name : name,
+					  		john : iAmJohn,
+					  		go: false,
+					  		score : score
+					    },
+					    callback : function(m){
+					    	checkPeople();
+					    	console.log(m)
+					    },
+					    error    : function(m){console.log(m)}
+					});
+
+					pubnub.publish({
+						channel : "mirrorRoom" + roomID,
+						message : {user: newJohn}
+					});
+
 					startBtn.addClass("hidden");
 					johninfo.addClass("hidden");
 				}
@@ -484,13 +554,17 @@ var roundEnded = function(amIJohn){
 		 pubnub.state({
 		   channel  : "mirrorRoom" + roomID,
 		   uuid     : username,
-		   state : {score: score},
 		   callback : function(m){
 		   		console.log(m)
+		   		console.log("checking if im john", username)
 		   		if (m.john == true){
-		   			startBtn.removeClass("hidden");
+		   			console.log("I am new john")
 					johninfo.removeClass("hidden");
+					startBtn.removeClass("hidden");
+					iWasJohn = true;
+					iAmJohn = true;
 		   		}
+		   		checkPeople();
 		   },
 		   error    : function(m){console.log(m)}
 		 });
