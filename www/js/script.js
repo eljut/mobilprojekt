@@ -76,7 +76,8 @@ if (window.DeviceOrientationEvent) {
 	    yawSpan.text(dir);
 
 	    if (roundStarted) {
-    		compareState(johnState);
+	    	poseTimer(10);
+    		//compareState(johnState);
     	}
 	  }, false);
 	}
@@ -151,8 +152,20 @@ startBtn.on('click', function() {
 	$("#room-info").addClass("hidden");
 	$("#game").removeClass("hidden");
 	johninfo.addClass("hidden");
-	startGame();
+	poseTimer(5);
 });
+
+var poseTimer = function(time) {
+	if (time > 0) {
+		setTimeout(function() {poseTimer(time-1)}, 1000);
+		$("#timer").text(time);
+	} else if (time < 1 && roundStarted == false) {
+		startGame();
+		$("#timer").text("Wait...");
+	} else {
+		compareState(johnState);
+	}
+}
 
 var startGame = function() {
 	pubnub.state({
