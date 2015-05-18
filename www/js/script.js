@@ -279,6 +279,7 @@ var startGame = function() {
 enterRoomBtn.on('click', function() {
 	$("#room-buttons-container").addClass("hidden");
 	$("#enter-room-container").removeClass("hidden");
+	$('#user-list').empty();
 	backBtn.removeClass("hidden");
 });
 
@@ -502,16 +503,31 @@ var angleBetweenRoll = function(n, a, b) {
 	}
 }
 
+var scoreCount = function(check) {
+	if(check == true){
+		return 1
+	}
+	else{
+		return -1
+	}
+}
+
 var checkPose = function() {
 
-	if (yawCheck == true && pitchCheck == true && rollCheck == true) {
-		$("#timer").text("Good job!");
-		score += 1;
-	} else {
-		$("#timer").text("Ooops, so close!");
-		//navigator.notification.vibrate(200);
-		score -= 1;
+	var addedScore = 0;
+
+	addedScore += scoreCount(yawCheck);
+	addedScore += scoreCount(pitchCheck);
+	addedScore += scoreCount(rollCheck);
+
+	if(addedScore > 0){
+		$("#timer").text("Great job!");
 	}
+	else{
+		$("#timer").text("Ooops, so close!");
+	}
+
+	score += addedScore;
 	roundEnded(false);
 }
 
@@ -569,7 +585,6 @@ var roundEnded = function(amIJohn){
 		    	}
 
 		    	randomJohn = getRandomUuid(m.uuids.length,selfPos);
-		    	console.log("randomJohn ",randomJohn)
 		    	newJohn = m.uuids[randomJohn];
 		    	console.log("newJohn ",newJohn)
 
