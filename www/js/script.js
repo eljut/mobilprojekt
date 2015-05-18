@@ -13,6 +13,74 @@ var yawSpan = $("#yaw");
 var pitchSpan = $("#pitch");
 var rollSpan = $("#roll");
 
+var dir = 0;
+var tiltFB = 0;
+var tiltLR = 0;
+
+var roundStarted = false;
+var johnState = null;
+
+$(function() {
+	homeScreen.append("<div><h2>"+angleBetween(360,349,379)+"</h2></div>");
+	homeScreen.append("<div><h2>"+angleBetween(1,-8,15)+"</h2></div>");
+	homeScreen.append("<div><h2>"+angleBetween(360,349,379)+"</h2></div>");
+});
+
+
+
+if (window.DeviceOrientationEvent) {
+	if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
+		var deviceOrientation = FULLTILT.getDeviceOrientation({'type': 'world'});
+
+		deviceOrientation.then(
+			function(orientationData) {
+				orientationData.listen(function() {
+					// Use `orientationData` object to interact with device orientation sensors
+					var screenAdjustedEvent = orientationData.getFixedFrameEuler();
+
+					dir = Math.round(screenAdjustedEvent.alpha);
+					yawSpan.text(dir);
+
+					tiltFB = Math.round(screenAdjustedEvent.beta);
+		    	pitchSpan.text(tiltFB);
+
+					tiltLR = Math.round(screenAdjustedEvent.gamma);
+		    	rollSpan.text(tiltLR);
+
+		    	if (roundStarted) {
+		    		compareState(johnState);
+		    	}
+		    });
+			}).catch(function(message) {
+				// Device Orientation Events are not supported
+	    }
+	  );
+	} else {
+		window.addEventListener('deviceorientation', function(event) {
+	    // gamma is the left-to-right tilt in degrees, where right is positive
+	    tiltLR = Math.round(event.gamma);
+	    rollSpan.text(tiltLR);
+
+	    // beta is the front-to-back tilt in degrees, where front is positive
+	    tiltFB = Math.round(event.beta);
+	    pitchSpan.text(tiltFB);
+
+	    // alpha is the compass direction the device is facing in degrees
+	    if(event.webkitCompassHeading) {
+        // Apple works only with this, alpha doesn't work
+        dir = Math.round(event.webkitCompassHeading);
+      } else {
+        dir = Math.round(event.alpha);
+      }
+	    yawSpan.text(dir);
+
+	    if (roundStarted) {
+    		compareState(johnState);
+    	}
+	  }, false);
+	}
+}
+
 // get/create/store username
 var username = PUBNUB.db.get('session') || (function(){ 
 	var uuid = PUBNUB.uuid(); 
@@ -40,18 +108,18 @@ backBtn.on('click', function() {
 
 createRoomBtn.on('click', function() {
 	var name = $("new-username").val();
-  var rand = Math.floor(Math.random() * 10000); // A random 4 digit number as channel name
-  if (rand < 1000) {
-  	if (rand > 99) {
-  		rand = "0"+rand;
-  	} else if (rand > 9) {
-  		rand = "00"+rand;
+  roomID = Math.floor(Math.random() * 10000); // A random 4 digit number as channel name
+  if (roomID < 1000) {
+  	if (roomID > 99) {
+  		roomID = "0"+roomID;
+  	} else if (roomID > 9) {
+  		roomID = "00"+roomID;
   	} else {
-  		rand = "000"+rand;
+  		roomID = "000"+roomID;
   	}
   }
   pubnub.subscribe({
-  	channel   : "mirrorRoom" + rand,
+  	channel   : "mirrorRoom" + roomID,
   	timetoken : new Date().getTime(),
   	presence: function(message) {
   		console.log(message.occupancy);
@@ -59,8 +127,7 @@ createRoomBtn.on('click', function() {
   	},
   	state: {
   		name : name,
-  		john : true,
-  		gameOn: false
+  		john : true
   	},
   	callback  : function(message) {
   	//	console.log("hej");
@@ -74,7 +141,7 @@ createRoomBtn.on('click', function() {
   homeScreen.removeClass("page-active");
 	room.addClass("page-active");
 	backBtn.removeClass("hidden");
-	$("#room-id").text(rand);
+	$("#room-id").text(roomID);
 	startBtn.removeClass("hidden");
 });
 
@@ -85,54 +152,18 @@ startBtn.on('click', function() {
 });
 
 var startGame = function() {
-	if (window.DeviceOrientationEvent) {
-
-		if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
-			var deviceOrientation = FULLTILT.getDeviceOrientation({'type': 'world'});
-
-			deviceOrientation.then(
-				function(orientationData) {
-					orientationData.listen(function() {
-						// Use `orientationData` object to interact with device orientation sensors
-						var screenAdjustedEvent = orientationData.getFixedFrameEuler();
-
-						var dir = Math.round(screenAdjustedEvent.alpha);
-						yawSpan.text(dir);
-
-						var tiltFB = Math.round(screenAdjustedEvent.beta);
-			    	pitchSpan.text(tiltFB);
-
-						var tiltLR = Math.round(screenAdjustedEvent.gamma);
-			    	rollSpan.text(tiltLR);
-			    });
-				}).catch(function(message) {
-					// Device Orientation Events are not supported
-		    }
-		  );
-		} else {
-			window.addEventListener('deviceorientation', function(event) {
-		    // gamma is the left-to-right tilt in degrees, where right is positive
-		    var tiltLR = Math.round(event.gamma);
-		    rollSpan.text(tiltLR);
-
-		    // beta is the front-to-back tilt in degrees, where front is positive
-		    var tiltFB = Math.round(event.beta);
-		    pitchSpan.text(tiltFB);
-
-		    // alpha is the compass direction the device is facing in degrees
-		    if(event.webkitCompassHeading) {
-	        // Apple works only with this, alpha doesn't work
-	        var dir = Math.round(event.webkitCompassHeading);
-	      } else {
-	        var dir = Math.round(event.alpha);
-	      }
-		    yawSpan.text(dir);
-
-		    // call our orientation event handler
-		    // deviceOrientationHandler(tiltLR, tiltFB, dir);
-		  }, false);
-		}
-	}
+	pubnub.state({
+		channel: "mirrorRoom" + roomID,
+		uuid: username,
+		state: {
+			name: name,
+  		john: true,
+  		yaw: dir,
+  		pitch: tiltFB,
+  		roll: tiltLR
+		},
+		callback: function(m){console.log(JSON.stringify(m))}
+	})
 }
 
 enterRoomBtn.on('click', function() {
@@ -178,25 +209,59 @@ var checkRoom = function() {
 	});
 }
 
+// Subscribe to an existing room
 var subscribeToRoom = function() {
 	console.log("entering room");
 	pubnub.subscribe({
   	channel   : "mirrorRoom" + roomID,
   	timetoken : new Date().getTime(),
+  	message: function(m){console.log(m)},
   	presence: function(message) {
-  		console.log(message.occupancy);
-  		$("#num-users").text(message.occupancy);
+  		console.log("presence",message);
+  		// // check state updates
+  		if (message.action == "state-change") {
+  			console.log("STATE CHANGE!");
+  			var stateChange = message.data;
+	  		if (stateChange.john == true) {
+	  			$("#room-info").addClass("hidden");
+					$("#game").removeClass("hidden");
+	  			roundStarted = true;
+	  			johnState = stateChange;
+	  		}
+  		} else {
+  			console.log(message.occupancy);
+  			$("#num-users").text(message.occupancy);
+  		}
   	},
   	state: {
 			name : name,
-			john : false,
-			inGame: true
+			john : false
 		},
   	callback  : function(message) {
-
     },
     heartbeat: 6
   });
+}
+
+// Compare user's orientation to those of John
+var compareState = function(state) {
+	if (angleBetween(dir,state.yaw-10,state.yaw+10)) {
+		yawSpan.text("YEAH!");
+	} else {
+		yawSpan.text(":(");
+	}
+}
+
+var angleBetween = function(n, a, b) {
+	n = (360 + (n % 360)) % 360;
+	a = (3600000 + a) % 360;
+	b = (3600000 + b) % 360;
+
+	if (a < b) {
+		return n >= a && n <= b;
+	} else {
+		return n >= a || n <= b;
+	}
 }
 
 var goToHomeScreen = function() {
