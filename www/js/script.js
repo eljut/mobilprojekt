@@ -422,25 +422,25 @@ var subscribeToRoom = function() {
 // Compare user's orientation to those of John
 var compareState = function(state) {
 	if (angleBetween(dir,state.yaw-25,state.yaw+25)) {
-		yawSpan.css("background-color", "blue");
+		yawBG.css("background-color", "lime");
 	} else {
-		yawSpan.css("background-color", "#dddddd");
+		yawBG.css("background-color", "#dddddd");
 		yawCheck = false;
 	}
 
 	if (angleBetween(tiltFB+180,state.pitch-10+180,state.pitch+10+180)) {
-		pitchSpan.css("background-color", "blue");
+		pitchBG.css("background-color", "lime");
 		pitchCheck = true;
 	} else {
-		pitchSpan.css("background-color", "#dddddd");
+		pitchBG.css("background-color", "#dddddd");
 		pitchCheck = false;
 	}
 
 	if (angleBetweenRoll(tiltLR+90,state.roll-10+90,state.roll+10+90)) {
-		rollSpan.css("background-color", "blue");
+		rollBG.css("background-color", "lime");
 		rollCheck = true;
 	} else {
-		rollSpan.css("background-color", "#dddddd");
+		rollBG.css("background-color", "#dddddd");
 		rollCheck = false;
 	}
 
@@ -465,9 +465,9 @@ var colorYPR = function(state){
 	var rollAlpha =	1-(smallestAngle(tiltLR, state.roll, 90)/90);
 	var yawAlpha = 1-(smallestAngle(dir, state.yaw, 360)/180);
 
-	pitchBG.css("background-color", "rgba("+(255-(pitchAlpha*255))+","+(pitchAlpha*255)+",0,1");
-	rollBG.css("background-color", "rgba("+(255-(rollAlpha*255))+","+(rollAlpha*255)+",0,1)");
-	yawBG.css("background-color", "rgba("+(255-(yawAlpha*255))+","+(yawAlpha*255)+",0,1)");
+	pitchSpan.css("background-color", "rgba("+(255-(pitchAlpha*255))+","+(pitchAlpha*255)+",0,1");
+	rollSpan.css("background-color", "rgba("+(255-(rollAlpha*255))+","+(rollAlpha*255)+",0,1)");
+	yawSpan.css("background-color", "rgba("+(255-(yawAlpha*255))+","+(yawAlpha*255)+",0,1)");
 }
 
 var smallestAngle = function(a, b, maxangle) {

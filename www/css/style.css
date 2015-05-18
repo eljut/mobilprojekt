@@ -110,21 +110,20 @@ input:focus {
     margin-top: 40px;
 }
 #yaw, #pitch, #roll {
-    height: 100px;
-    width: 100px;
-    margin-top: 14px; 
-    font-size: 30pt;
+    height: 48px;
+    width: 48px;
+    margin-top: 8px; 
+    font-size: 14pt;
     border-radius: 9999px;
-    z-index: 10;
+    z-index: 1;
 }
 
 #yawBG, #pitchBG, #rollBG {
-    position: relative;
     background-color: #CCCCCC;
-    height: 128px;
-    width: 128px;
+    height: 64px;
+    width: 64px;
     border-radius: 9999px;
-    z-index: 9;
+    z-index: 0;
 }
 
 

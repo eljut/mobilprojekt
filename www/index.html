@@ -71,26 +71,42 @@
                     <button id="start-button" class="btn btn-danger hidden">Start!</button></div>
                 </div>
                 <div id="game" class="hidden">
-                    <h1><span id="timer"></span></h1>
+                    <div class="container-fluid">
+                        <h1><span id="timer"></span></h1>
 
-                    <img src="img/arrowSpin.png" class="img-circle" height="128">
+                        <div class="row">
+                            <div  class="col-md-3">
+                                <img src="img/arrowSpin.png" class="img-circle" height="64">
+                            </div>
+                            <div  class="col-md-3">
+                                <div id="yawBG">
+                                    <div id="yaw" class="btn btn-danger"></div>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div id="yawBG">
-                        <div id="yaw" class="btn btn-danger"></div>
+                        <div class="row">
+                            <div  class="col-md-3">
+                              <img src="img/arrowVer.png" class="img-circle" height="64">
+                            </div>
+                            <div  class="col-md-3">
+                                <div id="pitchBG">
+                                    <div id="pitch" class="btn btn-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div  class="col-md-3">
+                              <img src="img/arrowHor.png" class="img-circle" height="64">
+                            </div>
+                            <div  class="col-md-3">
+                                <div id="rollBG">
+                                    <div id="roll" class="btn btn-danger"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <img src="img/arrowHor.png" class="img-circle" height="128">
-
-                    <div id="pitchBG">
-                        <div id="pitch" class="btn btn-danger"></div>
-                    </div>
-
-                    <img src="img/arrowVer.png" class="img-circle" height="128">
-
-                    <div id="rollBG">
-                        <div id="roll" class="btn btn-danger"></div>
-                    </div>
-
                     <!--<h3>Yaw: <span id="yaw"></span></h3>
                     <h3>Pitch: <span id="pitch"></span></h3>
                     <h3>Roll: <span id="roll"></span></h3>-->
