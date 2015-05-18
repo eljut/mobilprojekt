@@ -20,6 +20,10 @@ var dir = 0;
 var tiltFB = 0;
 var tiltLR = 0;
 
+var yawCheck = false;
+var rollCheck = false;
+var pitchCheck = false;
+
 var roundStarted = false;
 var johnState = null;
 
@@ -51,6 +55,7 @@ if (window.DeviceOrientationEvent) {
 		    		rollSpan.text(tiltLR);
 
 		    		if (roundStarted) {
+		    			poseTimer(10);
 		    			compareState(johnState);
 		    		}
 		    	});
@@ -79,7 +84,7 @@ if (window.DeviceOrientationEvent) {
 
 	    if (roundStarted) {
 	    	poseTimer(10);
-    		//compareState(johnState);
+    		compareState(johnState);
     	}
 	  }, false);
 	}
@@ -184,7 +189,8 @@ var poseTimer = function(time) {
 		startGame();
 		$("#timer").text("Wait...");
 	} else {
-		compareState(johnState);
+		$("#timer").text("Wait...");
+		checkPose();
 	}
 }
 
@@ -287,20 +293,26 @@ var subscribeToRoom = function() {
 var compareState = function(state) {
 	if (angleBetween(dir,state.yaw-10,state.yaw+10)) {
 		yawSpan.text("YEAH!");
+		yawCheck == true;
 	} else {
 		yawSpan.text(":(");
+		yawCheck == false;
 	}
 
 	if (angleBetween(tiltFB+180,state.pitch-10+180,state.pitch+10+180)) {
 		pitchSpan.text("YEAH!");
+		pitchCheck == true;
 	} else {
 		pitchSpan.text(":(");
+		pitchCheck == false;
 	}
 
 	if (angleBetweenRoll(tiltLR+90,state.roll-10+90,state.roll+10+90)) {
 		rollSpan.text("YEAH!");
+		rollCheck == true;
 	} else {
 		rollSpan.text(":(");
+		rollCheck == false;
 	}
 }
 
@@ -329,6 +341,14 @@ var angleBetweenRoll = function(n, a, b) {
 		return n >= a && n <= b;
 	} else {
 		return n >= a || n <= b;
+	}
+}
+
+var checkPose = function() {
+	if (yawCheck == true && pitchCheck == true && rollCheck == true) {
+		$("#timer").text("Good job!");
+	} else {
+		$("#timer").text("Ooops, so close!");
 	}
 }
 
