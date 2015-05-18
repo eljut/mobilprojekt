@@ -330,9 +330,50 @@ var compareState = function(state) {
 		rollSpan.text(":(");
 		rollCheck = false;
 	}
+	colorYPR(state);
 	// console.log("yawCheck:", yawCheck);
 	// console.log("pitchCheck:", pitchCheck);
 	// console.log("rollCheck:", rollCheck);
+}
+
+var colorYPR = function(state){
+	var pitchAlpha = 1-(smallestAngle(tiltFB, state.pitch, 180)/180);
+	var rollAlpha =	1-(smallestAngle(tiltLR, state.roll, 90)/90);
+	var yawAlpha = 1-(smallestAngle(dir, state.yaw, 360)/180);
+
+	pitchSpan.css("background-color", "rgba(0,255,0,"+pitchAlpha+")");
+	rollSpan.css("background-color", "rgba(0,255,0,"+rollAlpha+")");
+	yawSpan.css("background-color", "rgba(0,255,0,"+yawAlpha+")");
+}
+
+var smallestAngle = function(a, b, maxangle) {
+	var angle1 = Math.abs(a - b);
+
+	if (a < 0) {
+		a += maxangle*2;
+	}
+	if (b < 0) {
+		a += maxangle*2;
+	}
+
+	if(maxangle === 360){
+		if (a > 180) {
+		a -= 360;
+		}
+		if (b > 180) {
+		a -= 360;
+		}
+		var angle2 = Math.abs(a - b);
+	} else {
+		var angle2 = Math.abs(a - b);
+	}
+
+	
+	if (angle1 < angle2) {
+		return angle1
+	} else {
+		return angle2
+	}
 }
 
 // Check if angle "n" is between a and b
