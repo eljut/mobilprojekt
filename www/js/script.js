@@ -219,6 +219,7 @@ createRoomBtn.on('click', function() {
 	$("#room-id").text(roomID);
 	startBtn.removeClass("hidden");
 	johninfo.removeClass("hidden");
+	nonjohninfo.addClass("hidden");
 });
 
 startBtn.on('click', function() {
@@ -340,7 +341,6 @@ var checkMessage = function(m){
 
 var checkPresence = function(message){
 	console.log("presence",message);
-	nonjohninfo.removeClass("hidden");
 	// // check state updates
 	if (message.action == "state-change") {
 		console.log("STATE CHANGE!");
@@ -396,6 +396,7 @@ var subscribeToRoom = function() {
 		},
     heartbeat: 6
   });
+	nonjohninfo.removeClass("hidden");
 }
 
 // Compare user's orientation to those of John
@@ -614,6 +615,7 @@ var roundEnded = function(amIJohn){
 		   		console.log("checking if im john", username)
 		   		if (m.john == true){
 		   			console.log("I am new john")
+		   			nonjohninfo.addClass("hidden");
 					johninfo.removeClass("hidden");
 					startBtn.removeClass("hidden");
 					iWasJohn = true;
