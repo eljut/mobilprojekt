@@ -62,7 +62,19 @@
                     <h1>Room ID:<span id="room-id"></span></h1>
                     <h3>Number of participants:<span id="num-users"></span></h3>
                     <h3>Your Score:<span id="your-score"></span></h3>
-                    <ul class="list-unstyled" id="user-list"></ul>
+                    <!--ul class="list-unstyled" id="user-list"></ul-->
+
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Username</th>
+                            <th>Score</th>
+                          </tr>
+                        </thead>
+                        <tbody id="user-list">
+                        </tbody>
+                    </table>
+
                     <div id="john-info" class="hidden">
                         <h4>You are John!</h4>
                         <h4>Press Start and strike a pose!</h4>
