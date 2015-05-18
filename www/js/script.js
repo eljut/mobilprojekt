@@ -47,8 +47,8 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
 // device APIs are available
 function onDeviceReady() {
-	// Throw an error if no update is received every 2.5 seconds
-	var options = { timeout: 2500 };
+	// Throw an error if no update is received every 4 seconds
+	var options = { timeout: 4000 };
     watchID = navigator.geolocation.watchPosition(setNewCoords, positionErrorHandler, options);
 
     document.addEventListener('backbutton', function () {
@@ -64,6 +64,7 @@ var setNewCoords = function(position) {
 	console.log("Latitude: "+position.coords.latitude)
 	console.log("Longitude: "+position.coords.longitude)
 	newCoords = position.coords;
+	$("#no-position").addClass("hidden");
 	// oldCoords = {
 	// 	latitude: position.coords.latitude+0.0001,
 	// 	longitude: position.coords.longitude+0.0001
@@ -82,6 +83,7 @@ var positionErrorHandler = function(error) {
 	// alert('code: '    + error.code    + '\n' +
 	// 	'message: ' + error.message + '\n');
 	console.log("no position");
+	//$("#no-position").removeClass("hidden");
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -468,7 +470,7 @@ var compareState = function(state) {
   				newCoords.latitude,
   				newCoords.longitude);
 	if (distance-state.distance < 30 && distance-state.distance > -30) {
-		console.log("DISTANCE CHECK!");
+		
 	} else {
 		console.log("difference: "+distance-state.distance);
 	}

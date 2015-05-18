@@ -84,6 +84,18 @@ input:focus {
     text-align: center;
 }
 
+#no-position {
+    position: absolute;
+    top: 70px;
+    bottom: 200px;
+    left: 20px;
+    right: 20px;
+    background: #fff;
+    z-index: 10;
+    border-radius: 10px;
+    padding-top: 40px;
+}
+
 #new-username-button, #enter-button {
     display: inline-block;
     margin-top: 10px;
