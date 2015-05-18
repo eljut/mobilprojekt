@@ -113,6 +113,8 @@ $("#new-username-button").on('click', function() {
 
 var setName = function(newName) {
 	name = newName;
+	// var stateObj = { page: "home-screen" };
+	// history.pushState(stateObj, "home-screen", "#home-screen");
 	$("#home-screen .username").text(name);
 	$("#start-screen").removeClass("page-active");
 	homeScreen.addClass("page-active");
@@ -358,7 +360,10 @@ var goToHomeScreen = function() {
 	homeScreen.addClass("page-active");
 	$("#game").addClass("hidden");
 	$("#room-info").removeClass("hidden");
-	pubnub.unsubscribe({
-		channel: "mirrorRoom" + roomID
-	});
+	setTimeout(function() {
+		pubnub.unsubscribe({
+			channel: "mirrorRoom" + roomID
+		});
+		console.log("goodbye");
+	},100);
 }
