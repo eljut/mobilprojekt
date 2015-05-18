@@ -3,6 +3,7 @@ var roomID = 0;
 var score = 0;
 var newUsernameInput = $("#new-username");
 var homeScreen = $("#home-screen");
+var enterRoomScreen = $("#enter-room-screen");
 var room = $("#room");
 var backBtn = $("#back-button");
 var startBtn = $("#start-button");
@@ -49,6 +50,14 @@ function onDeviceReady() {
 	// Throw an error if no update is received every 2.5 seconds
 	var options = { timeout: 2500 };
     watchID = navigator.geolocation.watchPosition(setNewCoords, positionErrorHandler, options);
+
+    document.addEventListener('backbutton', function () {
+    	if (homeScreen.hasClass("page-active")) {
+    		navigator.app.exitApp();
+    	} else {
+    		goToHomeScreen();
+    	}
+	}, false);
 }
 
 var setNewCoords = function(position) {
@@ -290,8 +299,8 @@ var startGame = function() {
 }
 
 enterRoomBtn.on('click', function() {
-	$("#room-buttons-container").addClass("hidden");
-	$("#enter-room-container").removeClass("hidden");
+	homeScreen.removeClass("page-active");
+	enterRoomScreen.addClass("page-active");
 	$('#user-list').empty();
 	backBtn.removeClass("hidden");
 });
@@ -327,7 +336,7 @@ var checkRoom = function() {
 		    console.log("No one here");
 		    $("#enter-error").text(roomID+" does not exist.");
 			} else {
-				homeScreen.removeClass("page-active");
+				enterRoomScreen.removeClass("page-active");
 				room.addClass("page-active");
 				$("#room-id").text(roomID);
 				subscribeToRoom();
@@ -674,8 +683,7 @@ var roundEnded = function(amIJohn){
 }
 
 var goToHomeScreen = function() {
-	$("#enter-room-container").addClass("hidden");
-	$("#room-buttons-container").removeClass("hidden");
+	enterRoomScreen.removeClass("page-active");
 	backBtn.addClass("hidden");
 	room.removeClass("page-active");
 	homeScreen.addClass("page-active");
