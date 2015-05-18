@@ -36,9 +36,15 @@
                 </div>
             </div>
         </nav>
-        <div id="home-screen" class="page page-active">
+        <div id="start-screen" class="page page-active">
+            <div class="middle">
+                <input type="text" id="new-username" value="Fisk" placeholder="Enter username">
+                <button id="new-username-button" class="btn btn-success">Go</button>
+            </div>
+        </div>
+        <div id="home-screen" class="page">
             <div id="room-buttons-container">
-                <input type="text" id="new-username" placeholder="Enter username">
+                <h1>Hi, <span class="username"></span>!</h1>
                 <button id="vibrate" class="btn btn-warning">Vibrate!</button>
                 <br>
                 <button id="create-room" class="btn btn-success">Create new Mirror Room</button>

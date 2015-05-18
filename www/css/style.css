@@ -28,6 +28,28 @@ body {
     margin: 0px;
     padding: 0px;
     padding-top: 60px;
+    text-align: center;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+input {
+    -webkit-appearance: none;
+    padding: 8px;
+    color: black;
+    background: white;
+    border: 0;
+}
+
+input:focus {
+    outline: 0;
+    border-bottom: 1px solid Crimson;
+    box-shadow: none;
+}
+
+.middle {
 }
 
 #home-screen {

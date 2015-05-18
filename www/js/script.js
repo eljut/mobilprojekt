@@ -1,4 +1,6 @@
+var name = "lol";
 var roomID = 0;
+var newUsernameInput = $("#new-username");
 var homeScreen = $("#home-screen");
 var room = $("#room");
 var backBtn = $("#back-button");
@@ -26,7 +28,7 @@ $(function() {
 	homeScreen.append("<div><h2>"+angleBetween(360,349,379)+"</h2></div>");
 });
 
-
+if (window.hyper && window.hyper.log) { console.log = hyper.log }
 
 if (window.DeviceOrientationEvent) {
 	if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
@@ -42,15 +44,15 @@ if (window.DeviceOrientationEvent) {
 					yawSpan.text(dir);
 
 					tiltFB = Math.round(screenAdjustedEvent.beta);
-		    	pitchSpan.text(tiltFB);
+		    		pitchSpan.text(tiltFB);
 
 					tiltLR = Math.round(screenAdjustedEvent.gamma);
-		    	rollSpan.text(tiltLR);
+		    		rollSpan.text(tiltLR);
 
-		    	if (roundStarted) {
-		    		compareState(johnState);
-		    	}
-		    });
+		    		if (roundStarted) {
+		    			compareState(johnState);
+		    		}
+		    	});
 			}).catch(function(message) {
 				// Device Orientation Events are not supported
 	    }
@@ -98,6 +100,25 @@ var pubnub = PUBNUB.init({
 });
 console.log("username:",username);
 
+newUsernameInput.on('keydown', function(e) {
+	if (newUsernameInput.val().length > 0 && e.keyCode == 13) {
+		setName(newUsernameInput.val());
+	}
+});
+
+$("#new-username-button").on('click', function() {
+	if (newUsernameInput.val().length > 0) {
+		setName(newUsernameInput.val());
+	}
+});
+
+var setName = function(newName) {
+	name = newName;
+	$("#home-screen .username").text(name);
+	$("#start-screen").removeClass("page-active");
+	homeScreen.addClass("page-active");
+}
+
 vibrateBtn.on('click', function() {
 	navigator.notification.vibrate(200)
 });
@@ -108,37 +129,37 @@ backBtn.on('click', function() {
 
 createRoomBtn.on('click', function() {
 	var name = $("new-username").val();
-  roomID = Math.floor(Math.random() * 10000); // A random 4 digit number as channel name
-  if (roomID < 1000) {
-  	if (roomID > 99) {
-  		roomID = "0"+roomID;
-  	} else if (roomID > 9) {
-  		roomID = "00"+roomID;
-  	} else {
-  		roomID = "000"+roomID;
-  	}
-  }
-  pubnub.subscribe({
-  	channel   : "mirrorRoom" + roomID,
-  	timetoken : new Date().getTime(),
-  	presence: function(message) {
-  		console.log(message.occupancy);
-  		$("#num-users").text(message.occupancy);
-  	},
-  	state: {
-  		name : name,
-  		john : true
-  	},
-  	callback  : function(message) {
-  	//	console.log("hej");
-  	//	homeScreen.removeClass("page-active");
-		//	room.addClass("page-active");
-		//	$("#roomID").text(roomID);
-    },
-    heartbeat: 6
-  });
-  console.log("hej");
-  homeScreen.removeClass("page-active");
+	roomID = Math.floor(Math.random() * 10000); // A random 4 digit number as channel name
+	if (roomID < 1000) {
+		if (roomID > 99) {
+			roomID = "0"+roomID;
+		} else if (roomID > 9) {
+	  		roomID = "00"+roomID;
+	  	} else {
+	  		roomID = "000"+roomID;
+	  	}
+	}
+	pubnub.subscribe({
+	  	channel   : "mirrorRoom" + roomID,
+	  	timetoken : new Date().getTime(),
+	  	presence: function(message) {
+	  		console.log(message.occupancy);
+	  		$("#num-users").text(message.occupancy);
+	  	},
+	  	state: {
+	  		name : name,
+	  		john : true
+	  	},
+	  	callback  : function(message) {
+	  	//	console.log("hej");
+	  	//	homeScreen.removeClass("page-active");
+			//	room.addClass("page-active");
+			//	$("#roomID").text(roomID);
+	    },
+	    heartbeat: 6
+	});
+	console.log("hej");
+	homeScreen.removeClass("page-active");
 	room.addClass("page-active");
 	backBtn.removeClass("hidden");
 	$("#room-id").text(roomID);
@@ -152,6 +173,9 @@ startBtn.on('click', function() {
 });
 
 var startGame = function() {
+	console.log("yaw");console.log(dir);
+	console.log("pitch");console.log(tiltFB);
+	console.log("roll");console.log(tiltLR);
 	pubnub.state({
 		channel: "mirrorRoom" + roomID,
 		uuid: username,
@@ -250,8 +274,22 @@ var compareState = function(state) {
 	} else {
 		yawSpan.text(":(");
 	}
+
+	if (angleBetween(tiltFB+180,state.pitch-10+180,state.pitch+10+180)) {
+		pitchSpan.text("YEAH!");
+	} else {
+		pitchSpan.text(":(");
+	}
+
+	if (angleBetweenRoll(tiltLR+90,state.roll-10+90,state.roll+10+90)) {
+		rollSpan.text("YEAH!");
+	} else {
+		rollSpan.text(":(");
+	}
 }
 
+// Check if angle "n" is between a and b
+// Angles should be between 0-360
 var angleBetween = function(n, a, b) {
 	n = (360 + (n % 360)) % 360;
 	a = (3600000 + a) % 360;
@@ -264,15 +302,29 @@ var angleBetween = function(n, a, b) {
 	}
 }
 
+// Check if angle "n" is between a and b
+// Angles should be between 0-180
+var angleBetweenRoll = function(n, a, b) {
+	n = (180 + (n % 180)) % 180;
+	a = (1800000 + a) % 180;
+	b = (1800000 + b) % 180;
+
+	if (a < b) {
+		return n >= a && n <= b;
+	} else {
+		return n >= a || n <= b;
+	}
+}
+
 var goToHomeScreen = function() {
-	room.removeClass("page-active");
-	homeScreen.addClass("page-active");
 	$("#enter-room-container").addClass("hidden");
 	$("#room-buttons-container").removeClass("hidden");
+	backBtn.addClass("hidden");
+	room.removeClass("page-active");
+	homeScreen.addClass("page-active");
 	$("#game").addClass("hidden");
 	$("#room-info").removeClass("hidden");
-	backBtn.addClass("hidden");
 	pubnub.unsubscribe({
-    channel: "mirrorRoom" + roomID
-  });
+		channel: "mirrorRoom" + roomID
+	});
 }
