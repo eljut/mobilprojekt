@@ -680,7 +680,7 @@ var roundEnded = function(amIJohn){
 		   uuid     : username,
 		   callback : function(m){
 		   		console.log(m)
-		   		console.log("checking if im john", username)
+		   		console.log("checking if im john ", username)
 		   		if (m.john == true){
 		   			console.log("I am new john")
 		   			nonjohninfo.addClass("hidden");
@@ -690,11 +690,29 @@ var roundEnded = function(amIJohn){
 					iAmJohn = true;
 		   		}
 		   		else{
+		   			console.log("I am not new john")
 		   			nonjohninfo.removeClass("hidden");
 		   			startBtn.addClass("hidden");
 					johninfo.addClass("hidden");
+					iWasJohn = false;
+					iAmJohn = false;
 		   		}
-		   		checkPeople();
+
+		   		pubnub.state({
+				    channel  : "mirrorRoom" + roomID,
+				    uuid: username, 
+				    state    : { 
+				    	name : name,
+				  		john : iAmJohn,
+				  		go: false,
+				  		score : score
+				    },
+				    callback : function(m){
+				    	console.log(m)
+				    	checkPeople();
+				    },
+				    error    : function(m){console.log(m)}
+				});
 		   },
 		   error    : function(m){console.log(m)}
 		 });
