@@ -82,11 +82,6 @@ input:focus {
     text-align: center;
 }
 
-.container-fluid {
-  padding-right: 40px;
-  padding-left: 40px;
-}
-
 #new-username-button {
     display: inline-block;
     margin-top: 10px;
@@ -122,26 +117,15 @@ input:focus {
 
 .page-active {
     display: block;
-    -webkit-animation: alert-change .3s  ease-in-out
+    -webkit-animation: change-page .3s  ease-in-out
 }
 
-@-webkit-keyframes alert-change {
+@-webkit-keyframes change-page {
   0% {
     opacity: 0;
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
-  50% {
-    
   }
   100% {
     opacity: 1;
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -webkit-transform: scale(1);
-    transform: scale(1);
   }
 }
 
@@ -150,6 +134,9 @@ input:focus {
 }
 
 #back-button {
+    position: absolute;
+    top: 5px;
+    left: 0px;
     background: none;
     margin-top: 2px;
 }
@@ -160,9 +147,9 @@ input:focus {
 }
 
 #start-button {
-    border-radius: 50px;
-    width: 100px;
-    height: 100px;
+    border-radius: 50%;
+    width: 110px;
+    height: 110px;
     font-size: 25pt;
 }
 
@@ -171,9 +158,9 @@ input:focus {
 }
 
 .timerAnimation {
-    /*font-size: 50pt;*/
-    -webkit-animation: timer-animation 1s infinite;
-    animation: timer-animation 1s infinite;
+    font-size: 40pt;
+    -webkit-animation: timer-animation 1s ease-in-out infinite;
+    animation: timer-animation 1s ease-in-out infinite;
 }
 
 .rednumbers {
@@ -181,19 +168,13 @@ input:focus {
 }
 
 @-webkit-keyframes timer-animation {
-    0% {font-size: 40pt;}
-    25% {font-size: 42pt;}
-    50% {font-size: 45pt;}
-    75% {font-size: 47pt;}
-    100% {font-size: 50pt;}
+    0% {-webkit-transform: scale(1);}
+    100% {-webkit-transform: scale(2);}
 }
 
 @keyframes timer-animation {
-    0% {font-size: 40pt;}
-    25% {font-size: 42pt;}
-    50% {font-size: 45pt;}
-    75% {font-size: 47pt;}
-    100% {font-size: 50pt;}
+    0% {transform: scale(1);}
+    100% {transform: scale(2);}
 }
 
 /* Portrait layout (default) */
