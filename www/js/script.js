@@ -290,6 +290,7 @@ var subscribeToRoom = function() {
   		} else {
   			console.log(message.occupancy);
   			$("#num-users").text(message.occupancy);
+  			yourScore.text(score);
   		}
   	},
   	state: {
@@ -362,29 +363,29 @@ var angleBetweenRoll = function(n, a, b) {
 }
 
 var checkPose = function() {
+
 	if (yawCheck == true && pitchCheck == true && rollCheck == true) {
 		$("#timer").text("Good job!");
-
-		//Add one score
-		pubnub.state({
-		   channel  : "mirrorRoom" + roomID,
-		   state    : { score: score+1 },
-		   callback : function(m){console.log(m)},
-		   error    : function(m){console.log(m)}
-		});
-
+		score += 1;
 	} else {
 		$("#timer").text("Ooops, so close!");
 		navigator.notification.vibrate(200);
-
-		//Remove one score
-		pubnub.state({
-		   channel  : "mirrorRoom" + roomID,
-		   state    : { score: score-1 },
-		   callback : function(m){console.log(m)},
-		   error    : function(m){console.log(m)}
-		});
+		score -= 1;
 	}
+
+	pubnub.state({
+	   channel  : "mirrorRoom" + roomID,
+	   state    : { score: score },
+	   callback : function(m){console.log(m)},
+	   error    : function(m){console.log(m)}
+	});
+
+	roundStarted = false;
+	$("#room-info").removeClass("hidden").delay(500);
+	$("#game").addClass("hidden").delay(500);
+	nonjohninfo.removeClass("hidden").delay(500);
+	yourScore.text(score);
+
 }
 
 var goToHomeScreen = function() {
