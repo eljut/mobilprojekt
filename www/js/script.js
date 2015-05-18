@@ -79,8 +79,9 @@ var setOldCoords = function(position) {
 }
 
 var positionErrorHandler = function(error) {
-	alert('code: '    + error.code    + '\n' +
-		'message: ' + error.message + '\n');
+	// alert('code: '    + error.code    + '\n' +
+	// 	'message: ' + error.message + '\n');
+	console.log("no position");
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
