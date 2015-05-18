@@ -27,12 +27,6 @@ var pitchCheck = false;
 var roundStarted = false;
 var johnState = null;
 
-$(function() {
-	homeScreen.append("<div><h2>"+angleBetween(360,349,379)+"</h2></div>");
-	homeScreen.append("<div><h2>"+angleBetween(1,-8,15)+"</h2></div>");
-	homeScreen.append("<div><h2>"+angleBetween(360,349,379)+"</h2></div>");
-});
-
 if (window.hyper && window.hyper.log) { console.log = hyper.log }
 
 if (window.DeviceOrientationEvent) {
