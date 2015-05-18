@@ -343,6 +343,9 @@ var colorYPR = function(state){
 	var rollAlpha =	1-(smallestAngle(tiltLR, state.roll, 90)/90);
 	var yawAlpha = 1-(smallestAngle(dir, state.yaw, 360)/180);
 
+	pitchSpan.css("background-color", "rgba("+(255-(pitchAlpha*255))+","+(pitchAlpha*255)+",0,1");
+	rollSpan.css("background-color", "rgba("+(255-(rollAlpha*255))+","+(rollAlpha*255)+",0,1)");
+	yawSpan.css("background-color", "rgba("+(255-(yawAlpha*255))+","+(yawAlpha*255)+",0,1)");
 }
 
 var smallestAngle = function(a, b, maxangle) {
