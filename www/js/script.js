@@ -48,20 +48,25 @@ document.addEventListener("deviceready", onDeviceReady, false);
 function onDeviceReady() {
 	// Throw an error if no update is received every 2.5 seconds
 	var options = { timeout: 2500 };
-    watchID = navigator.geolocation.watchPosition(setCoords, positionErrorHandler, options);
+    watchID = navigator.geolocation.watchPosition(setNewCoords, positionErrorHandler, options);
 }
 
-var setCoords = function(position) {
+var setNewCoords = function(position) {
 	console.log("Latitude: "+position.coords.latitude)
 	console.log("Longitude: "+position.coords.longitude)
 	newCoords = position.coords;
-	oldCoords = {
-		latitude: position.coords.latitude+0.0001,
-		longitude: position.coords.longitude+0.0001
-	};
-	var distance = calculateDistance(oldCoords.latitude, oldCoords.longitude,
-		newCoords.latitude, newCoords.longitude);
-	console.log("distance: "+distance);
+	// oldCoords = {
+	// 	latitude: position.coords.latitude+0.0001,
+	// 	longitude: position.coords.longitude+0.0001
+	// };
+	// var distance = calculateDistance(oldCoords.latitude, oldCoords.longitude,
+	// 	newCoords.latitude, newCoords.longitude);
+	// console.log("distance: "+distance);
+}
+
+var setOldCoords = function(position) {
+	console.log("oldCoords set");
+	oldCoords = position.coords;
 }
 
 var positionErrorHandler = function(error) {
@@ -228,6 +233,8 @@ createRoomBtn.on('click', function() {
 });
 
 startBtn.on('click', function() {
+	// Get starting coords
+	navigator.geolocation.getCurrentPosition(setOldCoords, positionErrorHandler);
 	$("#room-info").addClass("hidden");
 	$("#game").removeClass("hidden");
 	johninfo.addClass("hidden");
@@ -256,6 +263,11 @@ var poseTimer = function(time) {
 }
 
 var startGame = function() {
+	var distance = calculateDistance(oldCoords.latitude,
+  				oldCoords.longitude,
+  				newCoords.latitude,
+  				newCoords.longitude);
+	console.log("distance: "+distance);
 	console.log("yaw");console.log(dir);
 	console.log("pitch");console.log(tiltFB);
 	console.log("roll");console.log(tiltLR);
@@ -269,7 +281,8 @@ var startGame = function() {
   			go: true,
   			yaw: dir,
   			pitch: tiltFB,
-  			roll: tiltLR
+  			roll: tiltLR,
+  			distance: distance
 		},
 		callback: function(m){console.log(JSON.stringify(m))}
 	});
@@ -370,6 +383,7 @@ var checkPresence = function(message){
 				$("#game").removeClass("hidden");
 				nonjohninfo.addClass("hidden");
 				roundStarted = true;
+				navigator.geolocation.getCurrentPosition(setOldCoords, positionErrorHandler);
 				poseTimer(10);
 				johnState = stateChange;
 			}
@@ -429,6 +443,17 @@ var compareState = function(state) {
 		rollSpan.css("background-color", "#dddddd");
 		rollCheck = false;
 	}
+
+	var distance = calculateDistance(oldCoords.latitude,
+  				oldCoords.longitude,
+  				newCoords.latitude,
+  				newCoords.longitude);
+	if (distance-state.distance < 30 && distance-state.distance > -30) {
+		console.log("DISTANCE CHECK!");
+	} else {
+		console.log("difference: "+distance-state.distance);
+	}
+
 	colorYPR(state);
 	// console.log("yawCheck:", yawCheck);
 	// console.log("pitchCheck:", pitchCheck);
