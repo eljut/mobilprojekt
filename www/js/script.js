@@ -148,7 +148,7 @@ createRoomBtn.on('click', function() {
 	  	channel   : "mirrorRoom" + roomID,
 	  	timetoken : new Date().getTime(),
 	  	presence: function(message) {
-	  		console.log(message.occupancy);
+	  		console.log("people inside: ",message.occupancy);
 	  		$("#num-users").text(message.occupancy);
 	  	},
 	  	state: {
@@ -217,7 +217,8 @@ var startGame = function() {
   			roll: tiltLR
 		},
 		callback: function(m){console.log(JSON.stringify(m))}
-	})
+	});
+	roundEnded(true);
 }
 
 enterRoomBtn.on('click', function() {
@@ -369,22 +370,84 @@ var checkPose = function() {
 		score += 1;
 	} else {
 		$("#timer").text("Ooops, so close!");
-		navigator.notification.vibrate(200);
+		//navigator.notification.vibrate(200);
 		score -= 1;
 	}
-
+/*
 	pubnub.state({
 	   channel  : "mirrorRoom" + roomID,
 	   state    : { score: score },
 	   callback : function(m){console.log(m)},
 	   error    : function(m){console.log(m)}
 	});
+*/
+	roundEnded(false);
+}
 
+var roundEnded = function(amIJohn){
+
+	console.log("roundEnded")
 	roundStarted = false;
 	$("#room-info").removeClass("hidden").delay(500);
 	$("#game").addClass("hidden").delay(500);
 	nonjohninfo.removeClass("hidden").delay(500);
 	yourScore.text(score);
+
+	if(amIJohn){
+		console.log("I was John")
+		var randomJohn;
+		var newJohn;
+
+		pubnub.here_now({
+		    channel : "mirrorRoom" + roomID,
+		    callback : function(m){
+		    	console.log(m)
+		    	randomJohn = Math.floor(Math.random()*m.uuids.length);
+		    	console.log("randomJohn ",randomJohn)
+		    	newJohn = m.uuids[randomJohn];
+		    	console.log("newJohn ",newJohn)
+
+		    	pubnub.state({
+				    channel  : "mirrorRoom" + roomID,
+				    uuid: username, 
+				    state    : { john : false },
+				    callback : function(m){console.log(m)},
+				    error    : function(m){console.log(m)}
+				});
+
+				pubnub.state({
+				    channel  : "mirrorRoom" + roomID,
+				    uuid: newJohn, 
+				    state    : { john : true },
+				    callback : function(m){console.log(m)},
+				    error    : function(m){console.log(m)}
+				});
+
+				if (username == newJohn){
+					console.log("I became john again!")
+					startBtn.removeClass("hidden");
+					johninfo.removeClass("hidden");
+				}
+		    }
+		});
+	}
+	else{
+		console.log('I was not John')
+
+		 pubnub.state({
+		   channel  : "mirrorRoom" + roomID,
+		   uuid     : username,
+		   state : {score: score},
+		   callback : function(m){
+		   		console.log(m)
+		   		if (m.john == true){
+		   			startBtn.removeClass("hidden");
+					johninfo.removeClass("hidden");
+		   		}
+		   },
+		   error    : function(m){console.log(m)}
+		 });
+	}
 
 }
 
