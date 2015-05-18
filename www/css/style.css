@@ -20,15 +20,15 @@ html, body {
 body {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
-    background-color: #E4E4E4;
+    background-color: #e7e9e9;
+    color: #333;
     font-family: 'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
     font-size: 12px;
     height: 100%;
     width: 100%;
     margin: 0px;
     padding: 20px;
-    padding-top: 60px;
-    text-align: center;
+    padding-top: 70px;
 }
 
 h1 {
@@ -37,23 +37,80 @@ h1 {
 
 input {
     -webkit-appearance: none;
+    width: 90%;
+    font-size: 20px;
     padding: 8px;
     color: black;
     background: white;
     border: 0;
+    border-radius: 4px;
 }
 
 input:focus {
     outline: 0;
-    border-bottom: 1px solid Crimson;
+    border-bottom: 1px solid #E0196E;
     box-shadow: none;
 }
 
-.middle {
+#logo {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    -ms-transform: translate(-50%,0);
+    -webkit-transform: translate(-50%,0);
+    transform: translate(-50%,0);
+    color: #F7F9F9;
+    font-size: 24px;
+}
+
+.btn-1 {
+  color: #fff;
+  background: #00A676;
+  border-color: #009666;
+}
+
+.btn-1:hover, .btn-1:focus {
+    color: #fff;
+    background: #00A676
+}
+
+#header {
+    background: #e0196e;
+}
+
+.content {
+    text-align: center;
+}
+
+.container-fluid {
+  padding-right: 40px;
+  padding-left: 40px;
+}
+
+#new-username-button {
+    display: inline-block;
+    margin-top: 10px;
+    width: 90%;
+    padding: 10px 15px;
+    font-size: 20px;
 }
 
 #home-screen {
     text-align: center;
+}
+
+.home-screen-btn {
+    display: block;
+    margin-bottom: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    padding: 30px 50px;
+    font-size: 20px;
+}
+
+#create-room {
+    margin-top: 40px;
 }
 
 .page {
@@ -93,7 +150,8 @@ input:focus {
 }
 
 #back-button {
-    margin-top: 6px;
+    background: none;
+    margin-top: 2px;
 }
 
 #john-info {

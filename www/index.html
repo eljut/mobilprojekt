@@ -32,44 +32,46 @@
                 <div class="navbar-header">
                     <ul class="nav navbar-nav navbar-left">
                         <li><button id="back-button" class="btn hidden"><span class="glyphicon glyphicon-chevron-left"></span>Back</button></li>
-                     </ul>
+                    </ul>
+                    <!--img id="logo" src="img/logo.png" height="40"-->
+                    <span id="logo">Mirror Room</span>
                 </div>
             </div>
         </nav>
-        <div id="start-screen" class="page page-active">
-            <div class="middle">
+        <div class="content">
+            <div id="start-screen" class="page page-active">
+                <h1>Welcome!</h1>
+                <h3>Please enter you name</h3>
                 <input type="text" id="new-username" value="Fisk" placeholder="Enter username">
-                <button id="new-username-button" class="btn btn-success">Go</button>
+                <button id="new-username-button" class="btn btn-1">Go</button>
             </div>
-        </div>
-        <div id="home-screen" class="page">
-            <div id="room-buttons-container">
-                <h1>Hi, <span class="username"></span>!</h1>
-                <button id="vibrate" class="btn btn-warning">Vibrate!</button>
-                <br>
-                <button id="create-room" class="btn btn-success">Create new Mirror Room</button>
-                <br>
-                <button id="enter-room" class="btn btn-info">Enter Mirror Room</button>
+            <div id="home-screen" class="page">
+                <div id="room-buttons-container">
+                    <h1>Hi, <span class="username"></span>!</h1>
+                    <button id="create-room" class="btn btn-1 home-screen-btn">Create Mirror Room</button>
+                    <button id="enter-room" class="btn btn-info home-screen-btn">Enter Mirror Room</button>
+                    <button id="vibrate" class="btn btn-warning">Vibrate!</button>
+                </div>
+                <div id="enter-room-container" class="hidden">
+                    Room ID:<input type="number" id="room-id-input" placeholder="Enter room ID">
+                    <button id="enter-button" class="btn btn-1">Enter room!</button>
+                    <div id="enter-error"></div>
+                </div>
             </div>
-            <div id="enter-room-container" class="hidden">
-                Room ID:<input type="number" id="room-id-input" placeholder="Enter room ID">
-                <button id="enter-button" class="btn btn-success">Enter room!</button>
-                <div id="enter-error"></div>
-            </div>
-        </div>
-        <div id="room" class="page">
-            <div id="room-info">
-                <h1>Room ID:<span id="room-id"></span></h1>
-                <h3>Number of participants:<span id="num-users"></span></h3>
-                <div id="john-info" class="hidden"><h4>You are John!</h4>
-                <h4>Press Start and strike a pose!</h4>
-                <button id="start-button" class="btn btn-danger hidden">Start!</button></div>
-            </div>
-            <div id="game" class="hidden">
-                <h1><span id="timer"></span></h1>
-                <h3>Yaw: <span id="yaw"></span></h3>
-                <h3>Pitch: <span id="pitch"></span></h3>
-                <h3>Roll: <span id="roll"></span></h3>
+            <div id="room" class="page">
+                <div id="room-info">
+                    <h1>Room ID:<span id="room-id"></span></h1>
+                    <h3>Number of participants:<span id="num-users"></span></h3>
+                    <div id="john-info" class="hidden"><h4>You are John!</h4>
+                    <h4>Press Start and strike a pose!</h4>
+                    <button id="start-button" class="btn btn-danger hidden">Start!</button></div>
+                </div>
+                <div id="game" class="hidden">
+                    <h1><span id="timer"></span></h1>
+                    <h3>Yaw: <span id="yaw"></span></h3>
+                    <h3>Pitch: <span id="pitch"></span></h3>
+                    <h3>Roll: <span id="roll"></span></h3>
+                </div>
             </div>
         </div>
         <!--div class="app">
