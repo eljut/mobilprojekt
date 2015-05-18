@@ -1,5 +1,6 @@
 var name = "lol";
 var roomID = 0;
+var score = 0;
 var newUsernameInput = $("#new-username");
 var homeScreen = $("#home-screen");
 var room = $("#room");
@@ -12,6 +13,7 @@ var roomIdInput = $("#room-id-input");
 var vibrateBtn = $("#vibrate");
 var johninfo = $("#john-info");
 var nonjohninfo = $("#non-john-info"); 
+var yourScore = $("#your-score"); 
 
 var yawSpan = $("#yaw");
 var pitchSpan = $("#pitch");
@@ -131,6 +133,7 @@ backBtn.on('click', function() {
 
 createRoomBtn.on('click', function() {
 	var name = $("new-username").val();
+	score = 0; //Reset score
 	roomID = Math.floor(Math.random() * 10000); // A random 4 digit number as channel name
 	if (roomID < 1000) {
 		if (roomID > 99) {
@@ -150,7 +153,8 @@ createRoomBtn.on('click', function() {
 	  	},
 	  	state: {
 	  		name : name,
-	  		john : true
+	  		john : true,
+	  		score : score
 	  	},
 	  	callback  : function(message) {
 	  	//	console.log("hej");
@@ -206,10 +210,11 @@ var startGame = function() {
 		uuid: username,
 		state: {
 			name: name,
-  		john: true,
-  		yaw: dir,
-  		pitch: tiltFB,
-  		roll: tiltLR
+			score: score,
+  			john: true,
+  			yaw: dir,
+  			pitch: tiltFB,
+  			roll: tiltLR
 		},
 		callback: function(m){console.log(JSON.stringify(m))}
 	})
@@ -261,6 +266,7 @@ var checkRoom = function() {
 
 // Subscribe to an existing room
 var subscribeToRoom = function() {
+	score = 0; //Reset score
 	console.log("entering room");
 	pubnub.subscribe({
   	channel   : "mirrorRoom" + roomID,
@@ -288,7 +294,8 @@ var subscribeToRoom = function() {
   	},
   	state: {
 			name : name,
-			john : false
+			john : false,
+			score : score
 		},
   	callback  : function(message) {
     },
@@ -357,9 +364,26 @@ var angleBetweenRoll = function(n, a, b) {
 var checkPose = function() {
 	if (yawCheck == true && pitchCheck == true && rollCheck == true) {
 		$("#timer").text("Good job!");
+
+		//Add one score
+		pubnub.state({
+		   channel  : "mirrorRoom" + roomID,
+		   state    : { score: score+1 },
+		   callback : function(m){console.log(m)},
+		   error    : function(m){console.log(m)}
+		});
+
 	} else {
 		$("#timer").text("Ooops, so close!");
 		navigator.notification.vibrate(200);
+
+		//Remove one score
+		pubnub.state({
+		   channel  : "mirrorRoom" + roomID,
+		   state    : { score: score-1 },
+		   callback : function(m){console.log(m)},
+		   error    : function(m){console.log(m)}
+		});
 	}
 }
 
