@@ -11,6 +11,7 @@ var enterBtn = $("#enter-button");
 var roomIdInput = $("#room-id-input");
 var vibrateBtn = $("#vibrate");
 var johninfo = $("#john-info");
+var nonjohninfo = $("#non-john-info"); 
 
 var yawSpan = $("#yaw");
 var pitchSpan = $("#pitch");
@@ -177,12 +178,20 @@ startBtn.on('click', function() {
 
 var poseTimer = function(time) {
 	if (time > 0) {
+		$("#timer").addClass("timerAnimation")
 		setTimeout(function() {poseTimer(time-1)}, 1000);
 		$("#timer").text(time);
+		if (time <= 3) {
+			$("#timer").addClass("rednumbers");
+		}
 	} else if (time < 1 && roundStarted == false) {
 		startGame();
+		$("#timer").removeClass("rednumbers");
+		$("#timer").removeClass("timerAnimation");
 		$("#timer").text("Wait...");
 	} else if (time < 1 && roundStarted == true) {
+		$("#timer").removeClass("rednumbers");
+	 	$("#timer").removeClass("timerAnimation");
 	 	$("#timer").text("Wait...");
 	 	checkPose();
 	}
@@ -258,14 +267,15 @@ var subscribeToRoom = function() {
   	message: function(m){console.log(m)},
   	presence: function(message) {
   		console.log("presence",message);
-  		$("#timer").text("Wait for John...");
+  		nonjohninfo.removeClass("hidden");
   		// // check state updates
   		if (message.action == "state-change") {
   			console.log("STATE CHANGE!");
   			var stateChange = message.data;
 	  		if (stateChange.john == true) {
 	  			$("#room-info").addClass("hidden");
-					$("#game").removeClass("hidden");
+				$("#game").removeClass("hidden");
+				nonjohninfo.addClass("hidden");
 	  			roundStarted = true;
 	  			poseTimer(10);
 	  			johnState = stateChange;
@@ -310,10 +320,9 @@ var compareState = function(state) {
 		rollSpan.text(":(");
 		rollCheck = false;
 	}
-
-	console.log("yawCheck:", yawCheck);
-	console.log("pitchCheck:", pitchCheck);
-	console.log("rollCheck:", rollCheck);
+	// console.log("yawCheck:", yawCheck);
+	// console.log("pitchCheck:", pitchCheck);
+	// console.log("rollCheck:", rollCheck);
 }
 
 // Check if angle "n" is between a and b
@@ -349,6 +358,7 @@ var checkPose = function() {
 		$("#timer").text("Good job!");
 	} else {
 		$("#timer").text("Ooops, so close!");
+		navigator.notification.vibrate(200);
 	}
 }
 
