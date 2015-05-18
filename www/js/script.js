@@ -687,4 +687,8 @@ var goToHomeScreen = function() {
 		});
 		console.log("goodbye");
 	},100);
+	roundStarted = false;
+	johnState = null;
+	iWasJohn = false;
+	iAmJohn = false;
 }
