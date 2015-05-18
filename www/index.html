@@ -51,9 +51,10 @@
                     <button id="vibrate" class="btn btn-warning">Vibrate!</button>
                 </div>
                 <div id="enter-room-container" class="hidden">
-                    Room ID:<input type="number" id="room-id-input" placeholder="Enter room ID">
+                    <h1>Enter Room ID</h1>
+                    <input type="number" id="room-id-input" placeholder="Enter room ID">
                     <button id="enter-button" class="btn btn-1">Enter room!</button>
-                    <div id="enter-error"></div>
+                    <h2 id="enter-error"></h2>
                 </div>
             </div>
             <div id="room" class="page">
@@ -61,10 +62,12 @@
                     <h1>Room ID:<span id="room-id"></span></h1>
                     <h3>Number of participants:<span id="num-users"></span></h3>
                     <h3>Your Score:<span id="your-score"></span></h3>
-                    <h4>Users</h4><ul id="user-list"></ul>
-                    <div id="john-info" class="hidden"><h4>You are John!</h4>
+                    <ul class="list-unstyled" id="user-list"></ul>
+                    <div id="john-info" class="hidden">
+                        <h4>You are John!</h4>
+                        <h4>Press Start and strike a pose!</h4>
+                    </div>
                     <div id="non-john-info" class="hidden"><h4>Wait for John...</h4></div>
-                    <h4>Press Start and strike a pose!</h4>
                     <button id="start-button" class="btn btn-danger hidden">Start!</button></div>
                 </div>
                 <div id="game" class="hidden">
