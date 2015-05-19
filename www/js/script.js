@@ -19,14 +19,17 @@ var yourScore = $("#your-score");
 var yawSpan = $("#yaw");
 var pitchSpan = $("#pitch");
 var rollSpan = $("#roll");
+var distanceSpan = $("#distance");
 
 var yawBG = $("#yawBG");
 var pitchBG = $("#pitchBG");
 var rollBG = $("#rollBG");
+var distanceBG = $("#distanceBG");
 
 var dir = 0;
 var tiltFB = 0;
 var tiltLR = 0;
+var distance = 0;
 
 var oldCoords = {};
 var newCoords = {};
@@ -34,6 +37,7 @@ var newCoords = {};
 var yawCheck = false;
 var rollCheck = false;
 var pitchCheck = false;
+var distanceCheck = false;
 
 var roundStarted = false;
 var johnState = null;
@@ -61,17 +65,10 @@ function onDeviceReady() {
 }
 
 var setNewCoords = function(position) {
-	console.log("Latitude: "+position.coords.latitude)
-	console.log("Longitude: "+position.coords.longitude)
+	//console.log("Latitude: "+position.coords.latitude)
+	//console.log("Longitude: "+position.coords.longitude)
 	newCoords = position.coords;
 	$("#no-position").addClass("hidden");
-	// oldCoords = {
-	// 	latitude: position.coords.latitude+0.0001,
-	// 	longitude: position.coords.longitude+0.0001
-	// };
-	// var distance = calculateDistance(oldCoords.latitude, oldCoords.longitude,
-	// 	newCoords.latitude, newCoords.longitude);
-	// console.log("distance: "+distance);
 }
 
 var setOldCoords = function(position) {
@@ -80,8 +77,6 @@ var setOldCoords = function(position) {
 }
 
 var positionErrorHandler = function(error) {
-	// alert('code: '    + error.code    + '\n' +
-	// 	'message: ' + error.message + '\n');
 	console.log("no position");
 	//$("#no-position").removeClass("hidden");
 }
@@ -121,6 +116,14 @@ if (window.DeviceOrientationEvent) {
 
 					tiltLR = Math.round(screenAdjustedEvent.gamma);
 		    		rollSpan.text(tiltLR);
+
+		    		distance = calculateDistance(
+		    			oldCoords.latitude,
+		    			oldCoords.longitude,
+		    			newCoords.latitude,
+		    			newCoords.longitude);
+		    		distanceSpan.text(distance);
+		    		console.log("Distance: "+distance);
 
 		    		if (roundStarted) {
 		    			compareState(johnState);
@@ -171,7 +174,7 @@ var pubnub = PUBNUB.init({
 	ssl           : true,
 	uuid          : username
 });
-console.log("username:",username);
+console.log("username: "+username);
 
 newUsernameInput.on('keydown', function(e) {
 	if (newUsernameInput.val().length > 0 && (e.keyCode === 9 || e.keyCode == 13)) {
@@ -275,14 +278,14 @@ var poseTimer = function(time) {
 }
 
 var startGame = function() {
-	var distance = calculateDistance(oldCoords.latitude,
+	distance = calculateDistance(oldCoords.latitude,
   				oldCoords.longitude,
   				newCoords.latitude,
   				newCoords.longitude);
 	console.log("distance: "+distance);
-	console.log("yaw");console.log(dir);
-	console.log("pitch");console.log(tiltFB);
-	console.log("roll");console.log(tiltLR);
+	console.log("yaw "+dir);
+	console.log("pitch "+tiltFB);
+	console.log("roll "+tiltLR);
 	pubnub.state({
 		channel: "mirrorRoom" + roomID,
 		uuid: username,
@@ -465,13 +468,18 @@ var compareState = function(state) {
 		rollSpan.text(state.roll);
 	}
 
-	var distance = calculateDistance(oldCoords.latitude,
+	distance = calculateDistance(oldCoords.latitude,
   				oldCoords.longitude,
   				newCoords.latitude,
   				newCoords.longitude);
 	if (distance-state.distance < 30 && distance-state.distance > -30) {
-		
+		distanceBG.css("background-color", "lime");
+		distanceCheck = true;
+		distanceSpan.text(state.distance);
 	} else {
+		distanceBG.css("background-color", "#dddddd");
+		distanceCheck = false;
+		distanceSpan.text(distance-state.distance);
 		console.log("difference: "+distance-state.distance);
 	}
 
