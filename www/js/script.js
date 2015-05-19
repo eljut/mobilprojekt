@@ -601,13 +601,6 @@ var checkPose = function() {
 	addedScore += scoreCount(rollCheck);
 	addedScore += scoreCount(distanceCheck);
 
-	if(addedScore > 0){
-		$("#timer").text("Great job!");
-	}
-	else{
-		$("#timer").text("Ops, so close!");
-	}
-
 	score += addedScore;
 	roundEnded(false);
 }
@@ -657,8 +650,8 @@ var roundEnded = function(amIJohn){
 
 	console.log("roundEnded")
 	roundStarted = false;
-	$("#room-info").removeClass("hidden").delay(2500);
-	$("#game").addClass("hidden").delay(2500);
+	$("#room-info").removeClass("hidden");
+	$("#game").addClass("hidden");
 	yourScore.text(addedScore);
 
 	if(amIJohn){
@@ -696,7 +689,7 @@ var roundEnded = function(amIJohn){
 				    },
 				    callback : function(m){
 				    	console.log(m)
-				    	checkPeople();
+				    	setTimeout(checkPeople,200);
 				    },
 				    error    : function(m){console.log(m)}
 				});
@@ -749,7 +742,7 @@ var roundEnded = function(amIJohn){
 				    },
 				    callback : function(m){
 				    	console.log(m)
-				    	checkPeople();
+				    	setTimeout(checkPeople,200);
 				    },
 				    error    : function(m){console.log(m)}
 				});
