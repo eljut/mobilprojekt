@@ -291,7 +291,7 @@ var createRoom = function(){
 	backBtn.removeClass("hidden");
 	$("#room-id").text(roomID);
 	nonjohninfo.addClass("hidden");
-	startBtn.removeClass("hidden");
+	startBtn.addClass("hidden");
 	johninfo.removeClass("hidden");
 	$("#enter-error").text("");
 }
@@ -616,6 +616,11 @@ var checkPeople = function(){
 	pubnub.here_now({
 	    channel : "mirrorRoom" + roomID,
 	    callback : function(m){
+
+	    	if (iAmJohn && m.occupancy>1){
+	    		startBtn.removeClass("hidden");
+	    	}
+
 	    	$('#user-list').empty();
 	    	for(i=0; i<m.uuids.length; i++){
 	    		if(m.uuids[i].state.name == name){
