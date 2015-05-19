@@ -177,7 +177,7 @@ var pubnub = PUBNUB.init({
 console.log("username: "+username);
 
 newUsernameInput.on('keydown', function(e) {
-	if (newUsernameInput.val().length > 0 && (e.keyCode === 9 || e.keyCode == 13)) {
+	if (newUsernameInput.val().length > 0 && (e.keyCode === 9 || e.keyCode === 13)) {
 		setName(newUsernameInput.val());
 	}
 });
