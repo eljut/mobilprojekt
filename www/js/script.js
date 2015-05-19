@@ -599,6 +599,7 @@ var checkPose = function() {
 	addedScore += scoreCount(yawCheck);
 	addedScore += scoreCount(pitchCheck);
 	addedScore += scoreCount(rollCheck);
+	addedScore += scoreCount(distanceCheck);
 
 	if(addedScore > 0){
 		$("#timer").text("Great job!");
