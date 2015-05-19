@@ -440,32 +440,26 @@ var subscribeToRoom = function() {
 var compareState = function(state) {
 	if (angleBetween(dir,state.yaw-25,state.yaw+25)) {
 		yawBG.css("background-color", "lime");
-		yawSpan.text(state.yaw);
 		yawCheck = true;
 	} else {
 		yawBG.css("background-color", "#dddddd");
 		yawCheck = false;
-		yawSpan.text(state.yaw);
 	}
 
 	if (angleBetween(tiltFB+180,state.pitch-10+180,state.pitch+10+180)) {
 		pitchBG.css("background-color", "lime");
 		pitchCheck = true;
-		pitchSpan.text(state.pitch);
 	} else {
 		pitchBG.css("background-color", "#dddddd");
 		pitchCheck = false;
-		pitchSpan.text(state.pitch);
 	}
 
 	if (angleBetweenRoll(tiltLR+90,state.roll-10+90,state.roll+10+90)) {
 		rollBG.css("background-color", "lime");
 		rollCheck = true;
-		rollSpan.text(state.roll);
 	} else {
 		rollBG.css("background-color", "#dddddd");
 		rollCheck = false;
-		rollSpan.text(state.roll);
 	}
 
 	distance = calculateDistance(oldCoords.latitude,
