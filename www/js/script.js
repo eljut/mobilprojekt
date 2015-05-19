@@ -630,7 +630,7 @@ var checkPeople = function(){
 
 function randomIntFromInterval(min,max)
 {
-    return Math.floor(Math.random()*(max-min+1)+min);
+    return Math.floor(Math.random()*(max-min)+min);
 }
 
 var getRandomUuid = function(len,selfPos){
@@ -676,6 +676,7 @@ var roundEnded = function(amIJohn){
 		    	console.log("newJohn ",newJohn)
 
 				iAmJohn = false;
+				iWasJohn = true;
 
 				pubnub.state({
 				    channel  : "mirrorRoom" + roomID,
