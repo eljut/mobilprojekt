@@ -432,7 +432,7 @@ var checkPresence = function(message){
 				nonjohninfo.addClass("hidden");
 				roundStarted = true;
 				navigator.geolocation.getCurrentPosition(setOldCoords, positionErrorHandler);
-				poseTimer(15);
+				poseTimer(10);
 				johnState = stateChange;
 			}
 		}
