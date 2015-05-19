@@ -201,7 +201,7 @@ var setName = function(newName) {
 
 vibrateBtn.on('click', function() {
 	if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
-		navigator.notification.vibrate(200);
+		navigator.notification.vibrate(400);
 	} else {
 		navigator.notification.vibrate([100,200,50,200,100]);
 	}
@@ -647,7 +647,7 @@ var getRandomUuid = function(len,selfPos){
 }
 
 var roundEnded = function(amIJohn){
-
+	navigator.notification.vibrate(400);
 	console.log("roundEnded")
 	roundStarted = false;
 	$("#room-info").removeClass("hidden");
