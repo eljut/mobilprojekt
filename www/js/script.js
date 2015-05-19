@@ -1,6 +1,7 @@
 var name = "Awwyeah";
 var roomID = 0;
 var score = 0;
+var addedScore = 0;
 var newUsernameInput = $("#new-username");
 var homeScreen = $("#home-screen");
 var enterRoomScreen = $("#enter-room-screen");
@@ -442,7 +443,7 @@ var checkPresence = function(message){
 	else{
 		console.log(message.occupancy);
 		$("#num-users").text(message.occupancy);
-		yourScore.text(score);
+		yourScore.text(addedScore);
 	}
 }
 
@@ -593,7 +594,7 @@ var scoreCount = function(check) {
 
 var checkPose = function() {
 
-	var addedScore = 0;
+	addedScore = 0;
 
 	addedScore += scoreCount(yawCheck);
 	addedScore += scoreCount(pitchCheck);
@@ -652,7 +653,7 @@ var roundEnded = function(amIJohn){
 	roundStarted = false;
 	$("#room-info").removeClass("hidden").delay(2500);
 	$("#game").addClass("hidden").delay(2500);
-	yourScore.text(score);
+	yourScore.text(addedScore);
 
 	if(amIJohn){
 		console.log("I was John")
