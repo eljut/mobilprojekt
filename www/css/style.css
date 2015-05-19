@@ -121,7 +121,7 @@ input:focus {
 #create-room {
     margin-top: 40px;
 }
-#yaw, #pitch, #roll {
+#yaw, #pitch, #roll, #nav {
     height: 48px;
     width: 48px;
     margin-top: 8px; 
@@ -130,7 +130,7 @@ input:focus {
     z-index: 1;
 }
 
-#yawBG, #pitchBG, #rollBG {
+#yawBG, #pitchBG, #rollBG, #navBG {
     background-color: #CCCCCC;
     height: 64px;
     width: 64px;
