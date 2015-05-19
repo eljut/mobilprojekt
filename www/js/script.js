@@ -628,23 +628,20 @@ var checkPeople = function(){
 	});
 }
 
+function randomIntFromInterval(min,max)
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
+
 var getRandomUuid = function(len,selfPos){
 
-	randomJohn = Math.floor(Math.random()*len);
-
-	if(selfPos == randomJohn){
-		if(selfPos+1 > len){
-			if(selfPos > 0){
-				randomJohn = selfPos-1;
-			}
-			else{
-				randomJohn = 0;
-			}
-		}
-		else{
-			randomJohn = selfPos+1;
-		}
+	if(selfPos == 0){
+		randomJohn = randomIntFromInterval(selfPos+1,len);
 	}
+	else{
+		randomJohn = randomIntFromInterval(0,selfPos);
+	}
+
 	return randomJohn
 
 }
