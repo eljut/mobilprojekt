@@ -375,7 +375,7 @@ function getLocation() {
 }
 
 function usePosition(pos) {
-	roomID = geohash( pos.coords.latitude, 1 ) + '' + geohash( pos.coords.longitude, 1 );
+	roomID = geohash( pos.coords.latitude, 0 ) + '' + geohash( pos.coords.longitude, 0 );
 	console.log("Geo RoomID",roomID)
 	checkRoom();
 }
