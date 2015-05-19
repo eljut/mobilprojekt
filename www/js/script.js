@@ -9,7 +9,9 @@ var backBtn = $("#back-button");
 var startBtn = $("#start-button");
 var createRoomBtn = $("#create-room");
 var enterRoomBtn = $("#enter-room");
+var enterGeoRoomBtn = $("#enter-geo-room");
 var enterBtn = $("#enter-button");
+
 var roomIdInput = $("#room-id-input");
 var vibrateBtn = $("#vibrate");
 var johninfo = $("#john-info");
@@ -209,44 +211,6 @@ backBtn.on('click', function() {
 	goToHomeScreen();
 });
 
-createRoomBtn.on('click', function() {
-	
-	score = 0; //Reset score
-	roomID = Math.floor(Math.random() * 10000); // A random 4 digit number as channel name
-	if (roomID < 1000) {
-		if (roomID > 99) {
-			roomID = "0"+roomID;
-		} else if (roomID > 9) {
-	  		roomID = "00"+roomID;
-	  	} else {
-	  		roomID = "000"+roomID;
-	  	}
-	}
-	pubnub.subscribe({
-	  	channel   : "mirrorRoom" + roomID,
-	  	timetoken : new Date().getTime(),
-	  	message: checkMessage,
-	  	presence: checkPresence,
-	  	state: {
-	  		name : name,
-	  		john : true,
-	  		go: false,
-	  		score : score
-	  	},
-	    heartbeat: 6
-	});
-	iWasJohn = true;
-	iAmJohn = true;
-	homeScreen.removeClass("page-active");
-	room.addClass("page-active");
-	backBtn.removeClass("hidden");
-	$("#room-id").text(roomID);
-	nonjohninfo.addClass("hidden");
-	startBtn.removeClass("hidden");
-	johninfo.removeClass("hidden");
-	$("#enter-error").text("");
-});
-
 startBtn.on('click', function() {
 	// Get starting coords
 	navigator.geolocation.getCurrentPosition(setOldCoords, positionErrorHandler);
@@ -304,6 +268,48 @@ var startGame = function() {
 	roundEnded(true);
 }
 
+var createRoom = function(){
+	score = 0; //Reset score
+	pubnub.subscribe({
+	  	channel   : "mirrorRoom" + roomID,
+	  	timetoken : new Date().getTime(),
+	  	message: checkMessage,
+	  	presence: checkPresence,
+	  	state: {
+	  		name : name,
+	  		john : true,
+	  		go: false,
+	  		score : score
+	  	},
+	    heartbeat: 6
+	});
+	iWasJohn = true;
+	iAmJohn = true;
+	homeScreen.removeClass("page-active");
+	room.addClass("page-active");
+	enterRoomScreen.removeClass("page-active");
+	backBtn.removeClass("hidden");
+	$("#room-id").text(roomID);
+	nonjohninfo.addClass("hidden");
+	startBtn.removeClass("hidden");
+	johninfo.removeClass("hidden");
+	$("#enter-error").text("");
+}
+
+createRoomBtn.on('click', function() {
+	roomID = Math.floor(Math.random() * 10000); // A random 4 digit number as channel name
+	if (roomID < 1000) {
+		if (roomID > 99) {
+			roomID = "0"+roomID;
+		} else if (roomID > 9) {
+	  		roomID = "00"+roomID;
+	  	} else {
+	  		roomID = "000"+roomID;
+	  	}
+	}
+	createRoom();
+});
+
 enterRoomBtn.on('click', function() {
 	homeScreen.removeClass("page-active");
 	enterRoomScreen.addClass("page-active");
@@ -337,10 +343,11 @@ var checkRoom = function() {
 		channel : "mirrorRoom" + roomID,
 		callback : function(m) {
 			var numUsers = m.occupancy;
-			console.log("numUsers:",numUsers)
-			if (numUsers < 1) {
-		    console.log("No one here");
-		    $("#enter-error").text(roomID+" does not exist.");
+			console.log("numUsers: "+numUsers)
+			if (numUsers < 1 || numUsers === undefined) {
+		    	console.log("No one here");
+		    	createRoom();
+		    	$("#enter-error").text(roomID+" does not exist.");
 			} else {
 				enterRoomScreen.removeClass("page-active");
 				room.addClass("page-active");
@@ -350,6 +357,32 @@ var checkRoom = function() {
 			}
 		}
 	});
+}
+
+enterGeoRoomBtn.on('click', function() {
+	homeScreen.removeClass("page-active");
+	$('#user-list').empty();
+	backBtn.removeClass("hidden");
+	getLocation();
+});
+
+function getLocation() {
+	if (navigator.geolocation) {
+	    navigator.geolocation.getCurrentPosition(usePosition);
+	} else {
+	    head.html("Geolocation is not supported by this browser.");
+	}
+}
+
+function usePosition(pos) {
+	roomID = geohash( pos.coords.latitude, 1 ) + '' + geohash( pos.coords.longitude, 1 );
+	console.log("Geo RoomID",roomID)
+	checkRoom();
+}
+
+function geohash( coord, resolution ) {
+	var rez = Math.pow( 10, resolution || 0 ); 
+	return Math.floor(coord * rez) / rez; 
 }
 
 var checkMessage = function(m){
