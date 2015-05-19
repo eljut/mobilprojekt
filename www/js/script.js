@@ -94,7 +94,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
 	var d = R * c;
 	// return in meters
-	return d*1000;
+	return Math.round(d*1000);
 }
 
 Number.prototype.toRad = function() {
@@ -375,7 +375,7 @@ function getLocation() {
 }
 
 function usePosition(pos) {
-	roomID = geohash( pos.coords.latitude, 0 ) + '' + geohash( pos.coords.longitude, 0 );
+	roomID = geohash( pos.coords.latitude, 1 ) + '' + geohash( pos.coords.longitude, 1 );
 	console.log("Geo RoomID",roomID)
 	checkRoom();
 }
@@ -408,7 +408,7 @@ var checkMessage = function(m){
 var checkPresence = function(message){
 	console.log("presence",message);
 
-	checkPeople();
+	setTimeout(checkPeople,200);
 	// // check state updates
 	if (message.action == "state-change") {
 		console.log("STATE CHANGE!");
@@ -727,7 +727,6 @@ var roundEnded = function(amIJohn){
 		   			nonjohninfo.removeClass("hidden");
 		   			startBtn.addClass("hidden");
 					johninfo.addClass("hidden");
-					iWasJohn = false;
 					iAmJohn = false;
 		   		}
 
