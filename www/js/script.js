@@ -58,7 +58,7 @@ function onDeviceReady() {
     watchID = navigator.geolocation.watchPosition(setNewCoords, positionErrorHandler, options);
 
     document.addEventListener('backbutton', function () {
-    	if (homeScreen.hasClass("page-active")) {
+    	if (homeScreen.hasClass("page-active") || $("#start-screen").hasClass("page-active")) {
     		navigator.app.exitApp();
     	} else {
     		goToHomeScreen();
