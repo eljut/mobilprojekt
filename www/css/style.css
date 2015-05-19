@@ -132,6 +132,8 @@ input:focus {
 
 #yawBG, #pitchBG, #rollBG, #navBG {
     background-color: #CCCCCC;
+    margin-left: auto;
+    margin-right: auto;
     height: 64px;
     width: 64px;
     border-radius: 9999px;
