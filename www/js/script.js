@@ -125,7 +125,6 @@ if (window.DeviceOrientationEvent) {
 		    			newCoords.latitude,
 		    			newCoords.longitude);
 		    		distanceSpan.text(distance);
-		    		console.log("Distance: "+distance);
 
 		    		if (roundStarted) {
 		    			compareState(johnState);
