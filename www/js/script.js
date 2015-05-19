@@ -611,9 +611,8 @@ var getRandomUuid = function(len,selfPos){
 			randomJohn = selfPos+1;
 		}
 	}
-	else{
-		return randomJohn
-	}
+	return randomJohn
+
 }
 
 var roundEnded = function(amIJohn){
@@ -719,7 +718,6 @@ var roundEnded = function(amIJohn){
 		   error    : function(m){console.log(m)}
 		 });
 	}
-
 }
 
 var goToHomeScreen = function() {
