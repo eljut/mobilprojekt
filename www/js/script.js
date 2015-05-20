@@ -2,6 +2,7 @@ var name = "Awwyeah";
 var roomID = 0;
 var score = 0;
 var addedScore = 0;
+
 var newUsernameInput = $("#new-username");
 var homeScreen = $("#home-screen");
 var enterRoomScreen = $("#enter-room-screen");
@@ -14,7 +15,6 @@ var enterGeoRoomBtn = $("#enter-geo-room");
 var enterBtn = $("#enter-button");
 
 var roomIdInput = $("#room-id-input");
-var vibrateBtn = $("#vibrate");
 var johninfo = $("#john-info");
 var nonjohninfo = $("#non-john-info"); 
 var yourScore = $("#your-score"); 
@@ -112,11 +112,7 @@ function onDeviceReady() {
 		    pitchDiv.text(tiltFB);
 
 		    // alpha is the compass direction the device is facing in degrees
-		    // if(event.webkitCompassHeading) {
-	     //    	dir = Math.round(event.webkitCompassHeading);
-	     //  	} else {
-	       		dir = Math.round(event.alpha);
-	      	// }
+	       	dir = Math.round(event.alpha);
 		    yawDiv.text(dir);
 
 		    if (roundStarted) {
@@ -200,14 +196,6 @@ var setName = function(newName) {
 	$("#start-screen").removeClass("page-active");
 	homeScreen.addClass("page-active");
 }
-
-vibrateBtn.on('click', function() {
-	if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
-		navigator.notification.vibrate(400);
-	} else {
-		navigator.notification.vibrate([100,200,50,200,100]);
-	}
-});
 
 backBtn.on('click', function() {
 	goToHomeScreen();
@@ -399,6 +387,8 @@ function geohash( coord, resolution ) {
 	return Math.floor(coord * rez) / rez; 
 }
 
+// Function to check if current user is the new John
+// If true change state
 var checkMessage = function(m){
 	console.log(m)
 	if (m.user == username){
@@ -419,10 +409,10 @@ var checkMessage = function(m){
 }
 
 var checkPresence = function(message){
-	console.log("presence",message);
+	console.log("presence: "+message);
 
 	setTimeout(checkPeople,200);
-	// // check state updates
+	// check state updates
 	if (message.action == "state-change") {
 		console.log("STATE CHANGE!");
 		var stateChange = message.data;
@@ -598,17 +588,17 @@ var angleBetweenRoll = function(n, a, b) {
 	}
 }
 
+// Used for adding to or subtracting from total score
 var scoreCount = function(check) {
-	if(check == true){
+	if (check == true){
 		return 1
-	}
-	else{
+	} else {
 		return -1
 	}
 }
 
+// Updates user's total score
 var checkPose = function() {
-
 	addedScore = 0;
 
 	addedScore += scoreCount(yawCheck);
@@ -620,6 +610,9 @@ var checkPose = function() {
 	roundEnded(false);
 }
 
+// Checks how many users there are in the current room
+// Shows start button for John if there is at least another player in the room
+// Adds users to user-list
 var checkPeople = function(){
 	pubnub.here_now({
 	    channel : "mirrorRoom" + roomID,
@@ -643,13 +636,11 @@ var checkPeople = function(){
 	});
 }
 
-function randomIntFromInterval(min,max)
-{
+function randomIntFromInterval(min,max) {
     return Math.floor(Math.random()*(max-min)+min);
 }
 
-var getRandomUuid = function(len,selfPos){
-
+var getRandomUuid = function(len,selfPos) {
 	if(selfPos == 0){
 		randomJohn = randomIntFromInterval(selfPos+1,len);
 	}
@@ -661,6 +652,8 @@ var getRandomUuid = function(len,selfPos){
 
 }
 
+// Ends user's round
+// If current user was John last round a new John is selected
 var roundEnded = function(amIJohn){
 	navigator.notification.vibrate(400);
 	console.log("roundEnded")
