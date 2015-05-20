@@ -19,10 +19,10 @@ var johninfo = $("#john-info");
 var nonjohninfo = $("#non-john-info"); 
 var yourScore = $("#your-score"); 
 
-var yawSpan = $("#yaw");
-var pitchSpan = $("#pitch");
-var rollSpan = $("#roll");
-var distanceSpan = $("#distance");
+var yawDiv = $("#yaw");
+var pitchDiv = $("#pitch");
+var rollDiv = $("#roll");
+var distanceDiv = $("#distance");
 
 var yawBG = $("#yawBG");
 var pitchBG = $("#pitchBG");
@@ -65,27 +65,90 @@ function onDeviceReady() {
     		goToHomeScreen();
     	}
 	}, false);
+
+    // Device orientation
+	if (window.DeviceOrientationEvent) {
+		if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
+			var deviceOrientation = FULLTILT.getDeviceOrientation({'type': 'world'});
+
+			deviceOrientation.then(
+				function(orientationData) {
+					orientationData.listen(function() {
+						// Use 'orientationData' object to interact with device orientation sensors
+						var screenAdjustedEvent = orientationData.getFixedFrameEuler();
+
+						dir = Math.round(screenAdjustedEvent.alpha);
+						yawDiv.text(dir);
+
+						tiltFB = Math.round(screenAdjustedEvent.beta);
+			    		pitchDiv.text(tiltFB);
+
+						tiltLR = Math.round(screenAdjustedEvent.gamma);
+			    		rollDiv.text(tiltLR);
+
+			    		distance = calculateDistance(
+			    			oldCoords.latitude,
+			    			oldCoords.longitude,
+			    			newCoords.latitude,
+			    			newCoords.longitude);
+			    		distanceDiv.text(distance);
+
+			    		if (roundStarted) {
+			    			compareState(johnState);
+			    		}
+			    	});
+				}).catch(function(message) {
+					// Device Orientation Events are not supported
+		    }
+		  );
+		} else {
+			window.addEventListener('deviceorientation', function(event) {
+		    // gamma is the left-to-right tilt in degrees, where right is positive
+		    tiltLR = Math.round(event.gamma);
+		    rollDiv.text(tiltLR);
+
+		    // beta is the front-to-back tilt in degrees, where front is positive
+		    tiltFB = Math.round(event.beta);
+		    pitchDiv.text(tiltFB);
+
+		    // alpha is the compass direction the device is facing in degrees
+		    // if(event.webkitCompassHeading) {
+	     //    	dir = Math.round(event.webkitCompassHeading);
+	     //  	} else {
+	       		dir = Math.round(event.alpha);
+	      	// }
+		    yawDiv.text(dir);
+
+		    if (roundStarted) {
+	    		compareState(johnState);
+	    	}
+		  }, false);
+		}
+	}
 }
 
+// Set newCoords to position.coords
 var setNewCoords = function(position) {
-	//console.log("Latitude: "+position.coords.latitude)
-	//console.log("Longitude: "+position.coords.longitude)
 	newCoords = position.coords;
 	$("#no-position").addClass("hidden");
 }
 
+// Set oldCoords to position.coords
 var setOldCoords = function(position) {
-	console.log("oldCoords set");
+	//console.log("oldCoords set");
 	oldCoords = position.coords;
 }
 
+// Error handler for geolocation position
 var positionErrorHandler = function(error) {
 	console.log("no position");
 	//$("#no-position").removeClass("hidden");
 }
 
+// Calculates the distance in meters between position (Lat1, Lon1) and position (Lat2, Lon2)
+// http://www.movable-type.co.uk/scripts/latlong.html
 function calculateDistance(lat1, lon1, lat2, lon2) {
-	var R = 6371; // km
+	var R = 6371*1000; // mean radius of earth
 	var dLat = (lat2 - lat1).toRad();
 	var dLon = (lon2 - lon1).toRad(); 
 	var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -93,72 +156,12 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 		Math.sin(dLon / 2) * Math.sin(dLon / 2); 
 	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
 	var d = R * c;
-	// return in meters
-	return d*1000;
+	return d;
 }
 
+// Number method for converting degrees to radians
 Number.prototype.toRad = function() {
 	return this * Math.PI / 180;
-}
-
-if (window.DeviceOrientationEvent) {
-	if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
-		var deviceOrientation = FULLTILT.getDeviceOrientation({'type': 'world'});
-
-		deviceOrientation.then(
-			function(orientationData) {
-				orientationData.listen(function() {
-					// Use `orientationData` object to interact with device orientation sensors
-					var screenAdjustedEvent = orientationData.getFixedFrameEuler();
-
-					dir = Math.round(screenAdjustedEvent.alpha);
-					yawSpan.text(dir);
-
-					tiltFB = Math.round(screenAdjustedEvent.beta);
-		    		pitchSpan.text(tiltFB);
-
-					tiltLR = Math.round(screenAdjustedEvent.gamma);
-		    		rollSpan.text(tiltLR);
-
-		    		distance = calculateDistance(
-		    			oldCoords.latitude,
-		    			oldCoords.longitude,
-		    			newCoords.latitude,
-		    			newCoords.longitude);
-		    		distanceSpan.text(distance);
-
-		    		if (roundStarted) {
-		    			compareState(johnState);
-		    		}
-		    	});
-			}).catch(function(message) {
-				// Device Orientation Events are not supported
-	    }
-	  );
-	} else {
-		window.addEventListener('deviceorientation', function(event) {
-	    // gamma is the left-to-right tilt in degrees, where right is positive
-	    tiltLR = Math.round(event.gamma);
-	    rollSpan.text(tiltLR);
-
-	    // beta is the front-to-back tilt in degrees, where front is positive
-	    tiltFB = Math.round(event.beta);
-	    pitchSpan.text(tiltFB);
-
-	    // alpha is the compass direction the device is facing in degrees
-	    if(event.webkitCompassHeading) {
-        // Apple works only with this, alpha doesn't work
-        dir = Math.round(event.webkitCompassHeading);
-      } else {
-        dir = Math.round(event.alpha);
-      }
-	    yawSpan.text(dir);
-
-	    if (roundStarted) {
-    		compareState(johnState);
-    	}
-	  }, false);
-	}
 }
 
 // get/create/store username
@@ -190,10 +193,9 @@ $("#new-username-button").on('click', function() {
 	}
 });
 
+// Set the user's name and go to home-screen
 var setName = function(newName) {
 	name = newName;
-	// var stateObj = { page: "home-screen" };
-	// history.pushState(stateObj, "home-screen", "#home-screen");
 	$("#home-screen .username").text(name);
 	$("#start-screen").removeClass("page-active");
 	homeScreen.addClass("page-active");
@@ -220,6 +222,7 @@ startBtn.on('click', function() {
 	poseTimer(5);
 });
 
+// Timer for posing, time is how many seconds are left
 var poseTimer = function(time) {
 	if (time > 0) {
 		$("#timer").addClass("timerAnimation")
@@ -241,6 +244,8 @@ var poseTimer = function(time) {
 	}
 }
 
+// For use when John's timer has ended
+// Sets John's state in pubnub so other players can follow his pose
 var startGame = function() {
 	distance = calculateDistance(oldCoords.latitude,
   				oldCoords.longitude,
@@ -268,6 +273,7 @@ var startGame = function() {
 	roundEnded(true);
 }
 
+// Creates a game room that other players can enter
 var createRoom = function(){
 	score = 0; //Reset score
 	pubnub.subscribe({
@@ -318,36 +324,41 @@ enterRoomBtn.on('click', function() {
 });
 
 enterBtn.on('click', function() {
-	enterRoom();
+	enterRoom(roomIdInput.val());
 });
 
 roomIdInput.on('keydown', function(e) {
 	if (e.keyCode === 9 || e.keyCode === 13) {
 		e.preventDefault();
-		enterRoom();
+		enterRoom(roomIdInput.val());
 	}
 });
 
-var enterRoom = function() {
-	roomID = roomIdInput.val();
+// Tries to enter the newID room, newID is a number between 0000-9999
+var enterRoom = function(newID) {
+	roomID = newID;
 	if (roomID.length == 4) {
-		checkRoom();
+		checkRoom(false);
 	} else {
 		$("#enter-error").html("Room ID is always<br>between 0000-9999.");
 	}
 }
 
 // Check if room exists, subscribes to it if exists
-var checkRoom = function() {
+// If you are checking using geohashing, it creates a new room if it doesn't exist
+var checkRoom = function(isGeohash) {
 	pubnub.here_now({
 		channel : "mirrorRoom" + roomID,
 		callback : function(m) {
 			var numUsers = m.occupancy;
 			console.log("numUsers: "+numUsers)
 			if (numUsers < 1 || numUsers === undefined) {
-		    	console.log("No one here");
-		    	createRoom();
-		    	$("#enter-error").text(roomID+" does not exist.");
+				if(isGeohash) {
+					createRoom();
+				} else {
+			    	console.log("No one here");
+			    	$("#enter-error").text(roomID+" does not exist.");
+			    }
 			} else {
 				enterRoomScreen.removeClass("page-active");
 				room.addClass("page-active");
@@ -366,27 +377,29 @@ enterGeoRoomBtn.on('click', function() {
 	getLocation();
 });
 
+// Get geolocation and enter geohash room
 function getLocation() {
 	if (navigator.geolocation) {
 	    navigator.geolocation.getCurrentPosition(usePosition);
 	} else {
-	    head.html("Geolocation is not supported by this browser.");
+	    console.log("Geolocation is not supported by this browser.");
 	}
 }
 
+// Enter geohash room
 function usePosition(pos) {
 	roomID = geohash( pos.coords.latitude, 0 ) + '' + geohash( pos.coords.longitude, 0 );
 	console.log("Geo RoomID",roomID)
-	checkRoom();
+	checkRoom(true);
 }
 
+// Function for getting geohash
 function geohash( coord, resolution ) {
 	var rez = Math.pow( 10, resolution || 0 ); 
 	return Math.floor(coord * rez) / rez; 
 }
 
 var checkMessage = function(m){
-
 	console.log(m)
 	if (m.user == username){
 		iAmJohn = true;
@@ -469,8 +482,9 @@ var subscribeToRoom = function() {
 	johninfo.addClass("hidden");
 }
 
-// Compare user's orientation to those of John
+// Compare user's orientation and distance traveled to those of John
 var compareState = function(state) {
+	// Compare yaw-angles
 	if (angleBetween(dir,state.yaw-25,state.yaw+25)) {
 		yawBG.css("background-color", "lime");
 		yawCheck = true;
@@ -479,6 +493,7 @@ var compareState = function(state) {
 		yawCheck = false;
 	}
 
+	// Compare pitch-angles
 	if (angleBetween(tiltFB+180,state.pitch-10+180,state.pitch+10+180)) {
 		pitchBG.css("background-color", "lime");
 		pitchCheck = true;
@@ -487,6 +502,7 @@ var compareState = function(state) {
 		pitchCheck = false;
 	}
 
+	// Compare roll-angles
 	if (angleBetweenRoll(tiltLR+90,state.roll-10+90,state.roll+10+90)) {
 		rollBG.css("background-color", "lime");
 		rollCheck = true;
@@ -495,35 +511,34 @@ var compareState = function(state) {
 		rollCheck = false;
 	}
 
+	// Compare distance traveled
 	distance = calculateDistance(oldCoords.latitude,
   				oldCoords.longitude,
   				newCoords.latitude,
   				newCoords.longitude);
-	if (distance-state.distance < 30 && distance-state.distance > -30) {
+	if (distance-state.distance < 20 && distance-state.distance > -20) {
 		distanceBG.css("background-color", "lime");
 		distanceCheck = true;
-		distanceSpan.text(state.distance);
+		distanceDiv.text(state.distance);
 	} else {
 		distanceBG.css("background-color", "#dddddd");
 		distanceCheck = false;
-		distanceSpan.text(distance-state.distance);
+		distanceDiv.text(distance-state.distance);
 		console.log("difference: "+distance-state.distance);
 	}
 
 	colorYPR(state);
-	// console.log("yawCheck:", yawCheck);
-	// console.log("pitchCheck:", pitchCheck);
-	// console.log("rollCheck:", rollCheck);
 }
 
+// Set color of yaw, pitch and roll Divs
 var colorYPR = function(state){
 	var pitchAlpha = 1-(smallestAngle(tiltFB, state.pitch, 180)/180);
 	var rollAlpha =	1-(smallestAngle(tiltLR, state.roll, 90)/90);
 	var yawAlpha = 1-(smallestAngle(dir, state.yaw, 360)/180);
 
-	pitchSpan.css("background-color", "rgba(0,255,0,"+pitchAlpha+")");
-	rollSpan.css("background-color", "rgba(0,255,0,"+rollAlpha+")");
-	yawSpan.css("background-color", "rgba(0,255,0,"+yawAlpha+")");
+	pitchDiv.css("background-color", "rgba(0,255,0,"+pitchAlpha+")");
+	rollDiv.css("background-color", "rgba(0,255,0,"+rollAlpha+")");
+	yawDiv.css("background-color", "rgba(0,255,0,"+yawAlpha+")");
 }
 
 var smallestAngle = function(a, b, maxangle) {

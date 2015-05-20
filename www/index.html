@@ -51,7 +51,6 @@
                 <div class="navbar-header">
                     <button id="back-button" class="btn hidden"><span class="glyphicon glyphicon-chevron-left"></span>Back</button>
                     <img id="logo" src="img/mirrorroom_logo.png" height="55">
-                    <!--span id="logo">Mirror Room</span-->
                 </div>
             </div>
         </nav>
@@ -69,7 +68,7 @@
                     <button id="create-room" class="btn btn-1 home-screen-btn">Create Mirror Room</button>
                     <button id="enter-room" class="btn btn-info home-screen-btn">Enter Mirror Room</button>
                     <button id="enter-geo-room" class="btn btn-warning home-screen-btn">Mirror-Geo Room</button>
-                    <button id="vibrate" class="btn btn-warning">Vibrate!</button>
+                    <!--button id="vibrate" class="btn btn-warning">Vibrate!</button-->
                 </div>
             </div>
             <div id="enter-room-screen" class="page">
@@ -81,10 +80,13 @@
             <div id="room" class="page">
                 <div id="room-info">
                     <h1>Room ID:<span id="room-id"></span></h1>
-                    <h3>Number of participants:<span id="num-users"></span></h3>
-                    <h3>The Reward: <span id="your-score"></span></h3>
-                    <!--ul class="list-unstyled" id="user-list"></ul-->
-
+                    <h3>Participants:<span id="num-users"></span></h3>
+                    <h3>Your Reward: <span id="your-score"></span></h3>
+                    <div id="john-info" class="hidden">
+                        <h3>You are John!</h3>
+                    </div>
+                    <div id="non-john-info" class="hidden"><h3>Wait for John...</h3></div>
+                    <button id="start-button" class="btn btn-danger hidden">Start!</button></div>
                     <table class="table">
                         <thead>
                           <tr>
@@ -95,12 +97,6 @@
                         <tbody id="user-list">
                         </tbody>
                     </table>
-
-                    <div id="john-info" class="hidden">
-                        <h3>You are John!</h3>
-                    </div>
-                    <div id="non-john-info" class="hidden"><h3>Wait for John...</h3></div>
-                    <button id="start-button" class="btn btn-danger hidden">Start!</button></div>
                 </div>
                 <div id="game" class="hidden">
                     <div class="container-fluid">
@@ -156,13 +152,6 @@
                 </div>
             </div>
         </div>
-        <!--div class="app">
-            <h1>Yo!</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
-        </div-->
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
     </body>
