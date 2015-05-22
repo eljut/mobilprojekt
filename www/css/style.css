@@ -8,6 +8,7 @@ html, body {
     max-width: 100%;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -30,7 +31,6 @@ body {
     margin: 0px;
     padding: 20px;
     padding-top: 70px;
-    overflow-x: hidden;
 }
 
 h1 {
@@ -63,6 +63,16 @@ input:focus {
     transform: translate(-50%,0);
     /*color: #F7F9F9;
     font-size: 24px;*/
+}
+
+#loading {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#loading h2 {
+    position: relative;
+    top: -90px;
 }
 
 .btn-1 {

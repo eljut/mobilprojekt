@@ -3,6 +3,7 @@ var roomID = 0;
 var score = 0;
 var addedScore = 0;
 
+var loading = $("#loading");
 var newUsernameInput = $("#new-username");
 var homeScreen = $("#home-screen");
 var enterRoomScreen = $("#enter-room-screen");
@@ -338,6 +339,7 @@ var checkRoom = function(isGeohash) {
 	pubnub.here_now({
 		channel : "mirrorRoom" + roomID,
 		callback : function(m) {
+			loading.addClass("hidden");
 			var numUsers = m.occupancy;
 			console.log("numUsers: "+numUsers)
 			if (numUsers < 1 || numUsers === undefined) {
@@ -360,6 +362,7 @@ var checkRoom = function(isGeohash) {
 
 enterGeoRoomBtn.on('click', function() {
 	homeScreen.removeClass("page-active");
+	loading.removeClass("hidden");
 	$('#user-list').empty();
 	backBtn.removeClass("hidden");
 	getLocation();
