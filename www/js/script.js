@@ -438,6 +438,7 @@ var checkPresence = function(message){
 				nonjohninfo.addClass("hidden");
 				roundStarted = true;
 				navigator.geolocation.getCurrentPosition(setOldCoords, positionErrorHandler);
+				navigator.notification.vibrate(400);
 				poseTimer(10);
 				johnState = stateChange;
 			}
