@@ -478,7 +478,7 @@ var subscribeToRoom = function() {
 // Compare user's orientation and distance traveled to those of John
 var compareState = function(state) {
 	// Compare yaw-angles
-	if (angleBetween(dir,state.yaw-25,state.yaw+25)) {
+	if (angleBetween(dir,state.yaw-25,state.yaw+25,360)) {
 		yawBG.css("background-color", "lime");
 		yawCheck = true;
 	} else {
@@ -487,7 +487,7 @@ var compareState = function(state) {
 	}
 
 	// Compare pitch-angles
-	if (angleBetween(tiltFB+180,state.pitch-10+180,state.pitch+10+180)) {
+	if (angleBetween(tiltFB+180,state.pitch-10+180,state.pitch+10+180,360)) {
 		pitchBG.css("background-color", "lime");
 		pitchCheck = true;
 	} else {
@@ -496,7 +496,7 @@ var compareState = function(state) {
 	}
 
 	// Compare roll-angles
-	if (angleBetweenRoll(tiltLR+90,state.roll-10+90,state.roll+10+90)) {
+	if (angleBetween(tiltLR+90,state.roll-10+90,state.roll+10+90,180)) {
 		rollBG.css("background-color", "lime");
 		rollCheck = true;
 	} else {
@@ -564,25 +564,10 @@ var smallestAngle = function(a, b, maxangle) {
 }
 
 // Check if angle "n" is between a and b
-// Angles should be between 0-360
-var angleBetween = function(n, a, b) {
-	n = (360 + (n % 360)) % 360;
-	a = (3600000 + a) % 360;
-	b = (3600000 + b) % 360;
-
-	if (a < b) {
-		return n >= a && n <= b;
-	} else {
-		return n >= a || n <= b;
-	}
-}
-
-// Check if angle "n" is between a and b
-// Angles should be between 0-180
-var angleBetweenRoll = function(n, a, b) {
-	n = (180 + (n % 180)) % 180;
-	a = (1800000 + a) % 180;
-	b = (1800000 + b) % 180;
+var angleBetween = function(n, a, b, maxangle) {
+	n = (maxangle + (n % maxangle)) % maxangle;
+	a = (maxangle * 10000 + a) % maxangle;
+	b = (maxangle * 10000 + b) % maxangle;
 
 	if (a < b) {
 		return n >= a && n <= b;
