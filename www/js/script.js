@@ -125,6 +125,22 @@ function onDeviceReady() {
 	}
 }
 
+// get/create/store username
+var username = PUBNUB.db.get('session') || (function(){ 
+	var uuid = PUBNUB.uuid(); 
+	PUBNUB.db.set('session', uuid); 
+	return uuid; 
+})();
+
+// initiate pubnnub with username
+var pubnub = PUBNUB.init({
+	publish_key   : "pub-c-c5851931-b8a6-414a-97c8-292c78141e1a",
+	subscribe_key : "sub-c-7786f29c-e506-11e4-bb49-0619f8945a4f",
+	origin        : 'pubsub.pubnub.com',
+	ssl           : true,
+	uuid          : username
+});
+
 // Set newCoords to position.coords
 var setNewCoords = function(position) {
 	newCoords = position.coords;
@@ -161,23 +177,6 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 Number.prototype.toRad = function() {
 	return this * Math.PI / 180;
 }
-
-// get/create/store username
-var username = PUBNUB.db.get('session') || (function(){ 
-	var uuid = PUBNUB.uuid(); 
-	PUBNUB.db.set('session', uuid); 
-	return uuid; 
-})();
-
-// initiate pubnnub with username
-var pubnub = PUBNUB.init({
-	publish_key   : "pub-c-c5851931-b8a6-414a-97c8-292c78141e1a",
-	subscribe_key : "sub-c-7786f29c-e506-11e4-bb49-0619f8945a4f",
-	origin        : 'pubsub.pubnub.com',
-	ssl           : true,
-	uuid          : username
-});
-console.log("username: "+username);
 
 newUsernameInput.on('keydown', function(e) {
 	if (newUsernameInput.val().length > 0 && (e.keyCode === 9 || e.keyCode === 13)) {
@@ -243,10 +242,6 @@ var startGame = function() {
   				oldCoords.longitude,
   				newCoords.latitude,
   				newCoords.longitude);
-	console.log("distance: "+distance);
-	console.log("yaw "+dir);
-	console.log("pitch "+tiltFB);
-	console.log("roll "+tiltLR);
 	pubnub.state({
 		channel: "mirrorRoom" + roomID,
 		uuid: username,
@@ -396,7 +391,7 @@ function geohash( coord, resolution ) {
 // Function to check if current user is the new John
 // If true change state
 var checkMessage = function(m){
-	console.log(m)
+	console.log("Message: "+m.user);
 	if (m.user == username){
 		iAmJohn = true;
 		pubnub.state({
@@ -415,8 +410,6 @@ var checkMessage = function(m){
 }
 
 var checkPresence = function(message){
-	console.log("presence: "+message);
-
 	setTimeout(checkPeople,200);
 	// check state updates
 	if (message.action == "state-change") {
@@ -616,7 +609,7 @@ var checkPeople = function(){
 
 	    	$('#user-list').empty();
 	    	for(i=0; i<m.uuids.length; i++){
-	    		if(m.uuids[i].state.name == name){
+	    		if(m.uuids[i].state.name === name){
 	    			$('#user-list').append('<tr><td><strong>'+m.uuids[i].state.name+'</strong></td><td>'+m.uuids[i].state.score+'</td></tr>');
 	    		}
 	    		else{
@@ -646,7 +639,7 @@ var getRandomUuid = function(len,selfPos) {
 
 // Ends user's round
 // If current user was John last round a new John is selected
-var roundEnded = function(amIJohn){
+var roundEnded = function(userWasJohn){
 	navigator.notification.vibrate(400);
 	console.log("roundEnded")
 	roundStarted = false;
@@ -654,7 +647,7 @@ var roundEnded = function(amIJohn){
 	$("#game").addClass("hidden");
 	yourScore.text(addedScore);
 
-	if(amIJohn){
+	if(userWasJohn){
 		console.log("I was John")
 		var randomJohn;
 		var newJohn;
