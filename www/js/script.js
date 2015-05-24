@@ -14,6 +14,7 @@ var createRoomBtn = $("#create-room");
 var enterRoomBtn = $("#enter-room");
 var enterGeoRoomBtn = $("#enter-geo-room");
 var enterBtn = $("#enter-button");
+var instructions = $("#instructions");
 
 var roomIdInput = $("#room-id-input");
 var johninfo = $("#john-info");
@@ -207,6 +208,7 @@ startBtn.on('click', function() {
 	navigator.geolocation.getCurrentPosition(setOldCoords, positionErrorHandler);
 	$("#room-info").addClass("hidden");
 	$("#game").removeClass("hidden");
+	instructions.text("Strike a pose!");
 	johninfo.addClass("hidden");
 	poseTimer(5);
 });
@@ -236,6 +238,7 @@ var poseTimer = function(time) {
 // For use when John's timer has ended
 // Sets John's state in pubnub so other players can follow his pose
 var startGame = function() {
+	instructions.text("Follow John!");
 	distance = calculateDistance(oldCoords.latitude,
   				oldCoords.longitude,
   				newCoords.latitude,
