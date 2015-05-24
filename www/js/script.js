@@ -207,8 +207,8 @@ startBtn.on('click', function() {
 	// Get starting coords
 	navigator.geolocation.getCurrentPosition(setOldCoords, positionErrorHandler);
 	$("#room-info").addClass("hidden");
-	$("#game").removeClass("hidden");
 	instructions.text("Strike a pose!");
+	$("#game").removeClass("hidden");
 	johninfo.addClass("hidden");
 	poseTimer(5);
 });
@@ -477,6 +477,7 @@ var subscribeToRoom = function() {
 	nonjohninfo.removeClass("hidden");
 	startBtn.addClass("hidden");
 	johninfo.addClass("hidden");
+	instructions.text("Follow John!");
 }
 
 // Compare user's orientation and distance traveled to those of John
